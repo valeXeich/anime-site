@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Anime Section Begin -->
+    <section class="anime-details spad">
+        <div class="container">
+            <div class="anime__details__content">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="anime__details__pic set-bg" style="background-image: url({{ anime_detail.poster.url }});">
+                            <div class="comment"><i class="bi bi-chat"></i> 11</div>
+                            <div class="view"><i class="bi bi-eye"></i> 9141</div>
+                        </div>
+                        <button class="btn btn-primary">Смотрю</button><button class="btn btn-primary">Буду смотреть</button><button class="btn btn-primary">Просмотрено</button><button class="btn btn-primary">Брошено</button>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="anime__details__text">
+                            <div class="anime__details__title">
+                                <h3>{{ anime_detail.title }}</h3>
+                                <span>{{ anime_detail.second_title }}</span>
+                            </div>
+                            <div class="anime__details__rating">
+                                <div class="rating">
+                                    <a href="#"><i class="bi bi-star"></i></a>
+                                    <a href="#"><i class="bi bi-star"></i></a>
+                                    <a href="#"><i class="bi bi-star"></i></a>
+                                    <a href="#"><i class="bi bi-star"></i></a>
+                                    <a href="#"><i class="bi bi-star"></i></a>
+                                </div>
+                                <span>1.029 Votes</span>
+                            </div>
+                            <p>{{ anime_detail.description }}</p>
+                            <div class="anime__details__widget">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <ul>
+                                            <li><span>Тип:</span> {{ anime_detail.get_type_display }}</li>
+                                            <li><span>Студия:</span> {{ anime_detail.studio }}</li>
+                                            <li><span>Дата выхода:</span>{{ anime_detail.year }}</li>
+                                            <li><span>Статус:</span> {{ anime_detail.get_status_display }}</li>
+                                            <li><span>Жанры:</span> {{ anime_detail.genre.all|join:", " }}</li>
+                                            <li><span>Режиссеры:</span> {{ anime_detail.directors.all|join:", " }}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <ul>
+                                            <li><span>Rating:</span> 8.5 / 161 times</li>
+                                            <li><span>Quality:</span> HD</li>
+                                            <li><span>Views:</span> 131,541</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="anime__details__btn">
+                                <a href="#" class="follow-btn"><i class="bi bi-heart"></i> Follow</a>
+                                <a href="#" class="watch-btn"><span>Watch Now</span> <i
+                                    class="bi bi-caret-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div class="row">
+            <div class="col-lg-8 col-md-8">
+                <div class="anime__details__review">
+                    <div class="section-title">
+                        <h5>Комментарии</h5>
+                    </div>
+                    <div class="anime__review__item">
+                        <div class="anime__review__item__pic">
+                            <img src="img/anime/review-1.jpg" alt="">
+                        </div>
+                        <div class="anime__review__item__text">
+                            <h6>Chris Curry - <span>1 Hour ago</span></h6>
+                            <p>whachikan Just noticed that someone categorized this as belonging to the genre
+                                "demons" LOL</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="anime__details__form">
+                    <div class="section-title">
+                        <h5>Оставить комменатрии</h5>
+                    </div>
+                    <form action="#">
+                        <textarea placeholder="Ваш комментарий"></textarea>
+                        <button type="submit"><i class="bi bi-send"></i>  Отправить</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                        <div class="anime__details__sidebar">
+                            <div class="section-title">
+                                <h5>you might like...</h5>
+                            </div>
+                            <div class="product__sidebar__view__item set-bg">
+                                <div class="ep">18 / ?</div>
+                                <div class="view"><i class="fa fa-eye"></i> 9141</div>
+                                <h5><a href="#">Fate/stay night: Heaven's Feel I. presage flower</a></h5>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+        </div>
+    </section>
+{% endblock content %}
