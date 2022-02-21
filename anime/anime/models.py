@@ -28,6 +28,13 @@ class Studio(models.Model):
         return self.name
 
 
+class Ip(models.Model):
+    ip = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.ip
+
+
 class Anime(models.Model):
     STATUS_ANIME = (
         ('released', 'Вышел'),
@@ -71,6 +78,7 @@ class Anime(models.Model):
     age_rating = models.CharField('Возрастной рейтинг', max_length=200, choices=AGE_RATING)
     season = models.CharField('Сезон', max_length=200, choices=SEASON_ANIME)
     type = models.CharField('Тип', max_length=200, choices=TYPE_ANIME)
+    views = models.ManyToManyField(Ip, verbose_name='Просмотры', related_name='anime_views', blank=True)
     url = models.SlugField(unique=True)
 
     def __str__(self):
@@ -78,6 +86,9 @@ class Anime(models.Model):
 
     def get_absolute_url(self):
         return reverse('anime:anime_detail', kwargs={'slug': self.url})
+
+    def total_views(self):
+        return self.views.count()
 
 
 class Profile(models.Model):

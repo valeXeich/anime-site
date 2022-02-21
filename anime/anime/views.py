@@ -1,11 +1,18 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import ListView, DetailView
-from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite
+from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip
 from .mixins import ProfileMixin, AnimeListMixin
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 class AnimeListView(ListView):
     model = Anime
@@ -20,6 +27,15 @@ class AnimeDetailView(AnimeListMixin, DetailView):
     slug_field = 'url'
     context_object_name = 'anime_detail'
     template_name = 'anime/anime_detail.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        anime_slug = kwargs.get('slug')
+        anime = Anime.objects.get(url=anime_slug)
+        ip = get_client_ip(request)
+
+        views_ip, created = Ip.objects.get_or_create(ip=ip)
+        anime.views.add(views_ip)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ProfileView(ProfileMixin, AnimeListMixin, DetailView):

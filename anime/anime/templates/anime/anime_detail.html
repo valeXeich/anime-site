@@ -9,7 +9,7 @@
                     <div class="col-lg-3">
                         <div class="anime__details__pic set-bg" style="background-image: url({{ anime_detail.poster.url }});">
                             <div class="comment"><i class="bi bi-chat"></i> 11</div>
-                            <div class="view"><i class="bi bi-eye"></i> 9141</div>
+                            <div class="view"><i class="bi bi-eye"></i> {{ anime_detail.total_views }}</div>
                         </div>
                         <a href="{% url 'anime:add_to_watching' slug=anime_detail.url %}"><button class="btn btn-primary">Смотрю</button></a>
                         <a href="{% url 'anime:add_to_will_watching' slug=anime_detail.url %}"><button class="btn btn-primary">Буду смотреть</button></a>
