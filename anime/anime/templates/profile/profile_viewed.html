@@ -28,11 +28,11 @@
           </div>
           <div id="status-menu" class="status-menu-container mt-2" >
               <div class="anime text-center">
-                  <a href="{% url 'anime:watching_now' pk=profile.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">СМОТРЮ</button></a>
-                  <a href="{% url 'anime:will_watching' pk=profile.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">БУДУ СМОТРЕТЬ</button></a>
-                  <a href="{% url 'anime:viewed' pk=profile.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">ПРОСМОТРЕНО</button></a>
-                  <a href="{% url 'anime:throw' pk=profile.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">БРОШЕНО</button></a>
-                  <a href="{% url 'anime:favorite' pk=profile.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">ЛЮБИМЫЕ</button></a>
+                 <a href="{% url 'anime:watching_now' pk=anime_viewed.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">СМОТРЮ</button></a>
+                  <a href="{% url 'anime:will_watching' pk=anime_viewed.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">БУДУ СМОТРЕТЬ</button></a>
+                  <button class="btn btn-outline-danger btn-lg mx-1">ПРОСМОТРЕНО</button>
+                  <a href="{% url 'anime:throw' pk=anime_viewed.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">БРОШЕНО</button></a>
+                  <a href="{% url 'anime:favorite' pk=anime_viewed.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">ЛЮБИМЫЕ</button></a>
               </div>
           </div>
           <table class="table table-dark table-hover mt-2">
@@ -45,12 +45,14 @@
     </tr>
   </thead>
   <tbody>
+  {% for viewed in anime_viewed.viewed.all %}
     <tr>
       <th scope="row">1</th>
-      <td><img src="https://cdn.myanimelist.net/r/96x136/images/anime/1948/120625.webp?s=fab0a2230b25c398ae7e8769ca9230b7"></td>
-      <td>Attack on Titan</td>
+      <td><img src="{{ viewed.anime.poster.url }}" class="image"></td>
+      <td>{{ viewed.anime.title }}</td>
       <td>1.9</td>
     </tr>
+  {% endfor %}
   </tbody>
 
   </table>
@@ -60,6 +62,10 @@
 </div>
 
 <style>
+
+.image {
+    width:120px
+}
 
 .status-menu-container {
     height: 49px;

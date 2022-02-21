@@ -13,6 +13,7 @@ class ProfileMixin(View):
             profile = Profile.objects.filter(user=user).first()
             if not profile:
                 profile = Profile.objects.create(user=user)
+        self.user = user
         self.profile = profile
         return super().dispatch(request, *args, **kwargs)
 

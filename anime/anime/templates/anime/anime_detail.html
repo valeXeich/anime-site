@@ -11,7 +11,10 @@
                             <div class="comment"><i class="bi bi-chat"></i> 11</div>
                             <div class="view"><i class="bi bi-eye"></i> 9141</div>
                         </div>
-                        <button class="btn btn-primary">Смотрю</button><button class="btn btn-primary">Буду смотреть</button><button class="btn btn-primary">Просмотрено</button><button class="btn btn-primary">Брошено</button>
+                        <a href="{% url 'anime:add_to_watching' slug=anime_detail.url %}"><button class="btn btn-primary">Смотрю</button></a>
+                        <a href="{% url 'anime:add_to_will_watching' slug=anime_detail.url %}"><button class="btn btn-primary">Буду смотреть</button></a>
+                        <a href="{% url 'anime:add_to_viewed' slug=anime_detail.url %}"><button class="btn btn-primary">Просмотрено</button></a>
+                        <a href="{% url 'anime:add_to_throw' slug=anime_detail.url %}"><button class="btn btn-primary">Брошено</button></a>
                     </div>
                     <div class="col-lg-9">
                         <div class="anime__details__text">
@@ -52,7 +55,7 @@
                                 </div>
                             </div>
                             <div class="anime__details__btn">
-                                <a href="#" class="follow-btn"><i class="bi bi-heart"></i> Follow</a>
+                                <a href="{% url 'anime:add_to_favorite' slug=anime_detail.url %}" class="follow-btn"><i class="bi bi-heart"></i> Follow</a>
                                 <a href="#" class="watch-btn"><span>Watch Now</span> <i
                                     class="bi bi-caret-right"></i></a>
                             </div>

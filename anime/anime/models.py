@@ -114,7 +114,7 @@ class WatchingNow(models.Model):
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Список смотрю пользователя: {}'.format(self.user)
+        return 'Аниме: {}'.format(self.anime)
 
 
 class WillWatch(models.Model):
@@ -123,7 +123,7 @@ class WillWatch(models.Model):
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Список буду смотреть пользователя: {}'.format(self.user)
+        return 'Аниме: {}'.format(self.anime)
 
 
 class Viewed(models.Model):
@@ -132,7 +132,7 @@ class Viewed(models.Model):
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE, related_name='related_viewed')
 
     def __str__(self):
-        return 'Список просмотрено пользователя: {}'.format(self.user)
+        return 'Аниме: {}'.format(self.anime)
 
 
 class Throw(models.Model):
@@ -141,7 +141,7 @@ class Throw(models.Model):
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE, related_name='related_throw')
 
     def __str__(self):
-        return 'Список брошено пользователя: {}'.format(self.user)
+        return 'Аниме: {}'.format(self.anime)
 
 
 class Favorite(models.Model):
@@ -150,7 +150,7 @@ class Favorite(models.Model):
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE, related_name='related_favorite')
 
     def __str__(self):
-        return 'Список любимые пользователя: {}'.format(self.user)
+        return 'Аниме: {}'.format(self.anime)
 
 
 class Comment(models.Model):
