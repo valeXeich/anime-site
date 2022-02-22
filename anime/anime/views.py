@@ -1,10 +1,14 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView
+
+from .forms import ProfileUpdateForm
 from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip
 from .mixins import ProfileMixin, AnimeListMixin
+
+User = get_user_model()
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -14,14 +18,30 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-class AnimeListView(ListView):
+
+class AnimeListView(ProfileMixin, ListView):
     model = Anime
     queryset = Anime.objects.all()
     context_object_name = 'anime_list'
     template_name = 'anime/anime_list.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['profile'] = self.profile
+        return context
 
-class AnimeDetailView(AnimeListMixin, DetailView):
+
+class UpdateProfileView(ProfileMixin, UpdateView):
+    model = Profile
+    form_class = ProfileUpdateForm
+    template_name = 'profile/profile_update.html'
+    context_object_name = 'profile'
+
+    def get_success_url(self, **kwargs):
+        return reverse('anime:profile_detail', kwargs={'pk': self.object.pk})
+
+
+class AnimeDetailView(ProfileMixin, AnimeListMixin, DetailView):
     model = Anime
     queryset = Anime.objects.all()
     slug_field = 'url'

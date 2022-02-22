@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account %}
+
+{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+
+    {% if user.is_authenticated %}
+    {% include "account/snippets/already_logged_in.html" %}
+    {% endif %}
+
+{% block content %}
+<!-- Normal Breadcrumb Begin -->
+    <section class="normal-breadcrumb set-bg" style="background-image: url(/static/img/normal-breadcrumb.jpg);">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="normal__breadcrumb__text">
+                        <h2>Подтверждение почты</h2>
+                        <p>Добро пожаловать в AnimeStorage.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Normal Breadcrumb End -->
+  <!-- Login Section Begin -->
+<section class="login spad">
+    <div class="container">
+        <div class="login__form">
+            <h3>Подтвердите ваш e-mail</h3>
+            <p class="pass">Мы отправили вам электронное письмо для проверки. Перейдите по предоставленной ссылке, чтобы завершить процесс регистрации. Если вы не видите письмо с подтверждением в своем основном почтовом ящике, проверьте папку со спамом. Пожалуйста, свяжитесь с нами, если вы не получили электронное письмо с подтверждением в течение нескольких минут. </p>
+        </div>
+    </div>
+</section>
+    <!-- Login Section End -->
+<style>
+    .pass {
+    color: #ffffff;
+    font-weight: 700;
+    font-family: "Oswald", sans-serif;
+    margin-bottom: 90px;
+    }
+</style>
+{% endblock content %}

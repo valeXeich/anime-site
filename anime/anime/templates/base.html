@@ -43,7 +43,7 @@
                     <div class="header__right">
                         <a href="#" class="search-switch"><i class="bi bi-search"></i></a>
                         {% if user.is_authenticated %}
-                        <a href="{% url 'anime:profile_detail' pk=user.pk %}"><i class="bi bi-person-fill"></i></a>
+                        <a href="{% url 'anime:profile_detail' pk=profile.pk %}"><i class="bi bi-person-fill"></i></a>
                         {% else %}
                         <a href="{% url 'account_login' %}">Вход</a>
                         {% endif %}

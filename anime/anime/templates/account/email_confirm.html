@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account %}
+
+{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+
+    {% if user.is_authenticated %}
+    {% include "account/snippets/already_logged_in.html" %}
+    {% endif %}
+
+{% block content %}
+<!-- Normal Breadcrumb Begin -->
+{% load account %}
+    <section class="normal-breadcrumb set-bg" style="background-image: url(/static/img/normal-breadcrumb.jpg);">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="normal__breadcrumb__text">
+                        <h2>Подтверждение почты</h2>
+                        <p>Добро пожаловать в AnimeStorage.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Normal Breadcrumb End -->
+  <!-- Login Section Begin -->
+<section class="login spad">
+    <div class="container">
+        <div class="login__form">
+            {% if confirmation %}
+            {% user_display confirmation.email_address.user as user_display %}
+            <h3>Подтвердите ваш e-mail</h3>
+            <p class="pass">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+            <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+                {% csrf_token %}
+                <button type="submit" class="site-btn">{% trans 'Confirm' %}</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="login__form">
+            {% url 'account_email' as email_url %}
+            <h3>Подтвердите ваш e-mail</h3>
+            <p class="pass">{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+    <!-- Login Section End -->
+<style>
+    .pass {
+    color: #ffffff;
+    font-weight: 700;
+    font-family: "Oswald", sans-serif;
+    margin-bottom: 90px;
+    }
+</style>
+{% endblock content %}
