@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="anime__details__pic set-bg" style="background-image: url({{ anime_detail.poster.url }});">
-                            <div class="comment"><i class="bi bi-chat"></i> 11</div>
+                            <div class="comment"><i class="bi bi-chat"></i> {{ anime_detail.number_of_comments }}</div>
                             <div class="view"><i class="bi bi-eye"></i> 9141</div>
                         </div>
                         <button class="btn btn-primary">Смотрю</button><button class="btn btn-primary">Буду смотреть</button><button class="btn btn-primary">Просмотрено</button><button class="btn btn-primary">Брошено</button>
@@ -36,7 +36,7 @@
                                         <ul>
                                             <li><span>Тип:</span> {{ anime_detail.get_type_display }}</li>
                                             <li><span>Студия:</span> {{ anime_detail.studio }}</li>
-                                            <li><span>Дата выхода:</span>{{ anime_detail.year }}</li>
+                                            <li><span>Дата выхода:</span> {{ anime_detail.year.year }}</li>
                                             <li><span>Статус:</span> {{ anime_detail.get_status_display }}</li>
                                             <li><span>Жанры:</span> {{ anime_detail.genre.all|join:", " }}</li>
                                             <li><span>Режиссеры:</span> {{ anime_detail.directors.all|join:", " }}</li>
@@ -64,27 +64,37 @@
         <div class="row">
             <div class="col-lg-8 col-md-8">
                 <div class="anime__details__review">
+                    {% if comments %}
                     <div class="section-title">
-                        <h5>Комментарии</h5>
+                        <h5>Отзывы</h5>
                     </div>
+                    {% endif %}
+                    {% for comment in comments %}
                     <div class="anime__review__item">
                         <div class="anime__review__item__pic">
-                            <img src="img/anime/review-1.jpg" alt="">
+                            <img src="{{ comment.author.profile.avatar.url }}" alt="avatar">
                         </div>
                         <div class="anime__review__item__text">
-                            <h6>Chris Curry - <span>1 Hour ago</span></h6>
-                            <p>whachikan Just noticed that someone categorized this as belonging to the genre
-                                "demons" LOL</p>
+                            <h6>{{ comment.author }} -<span> {{ comment.created_date }}</span></h6>
+                            <p>{{ comment.text }}</p>
+                            {% if comment.author.pk == request.user.pk %}
+                            <form action="{% url 'anime:delete_comment' pk=comment.pk %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-danger" type="submit">Удалить</button>
+                            </form>
+                            {% endif %}
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
                 <div class="anime__details__form">
                     <div class="section-title">
-                        <h5>Оставить комменатрии</h5>
+                        <h5>Оставить отзыв</h5>
                     </div>
-                    <form action="#">
-                        <textarea placeholder="Ваш комментарий"></textarea>
-                        <button type="submit"><i class="bi bi-send"></i>  Отправить</button>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.text }}
+                        <button type="submit"><i class="bi bi-send"></i>Отправить</button>
                     </form>
                 </div>
             </div>

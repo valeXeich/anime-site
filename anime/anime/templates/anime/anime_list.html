@@ -21,24 +21,24 @@
                         </div>
                     </div>
                     <div class="row">
+                        {% for anime in anime_list %}
                         <div class="col-lg-4 col-md-6 col-sm-6">
-                            {% for anime in anime_list %}
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" style="background-image: url({{ anime.poster.url }});">
                                     <div class="ep">18 / 18</div>
-                                    <div class="comment"><i class="bi bi-chat"></i> 11</div>
+                                    <div class="comment"><i class="bi bi-chat"></i> {{ anime.number_of_comments }}</div>
                                     <div class="view"><i class="bi bi-eye"></i> 9141</div>
                                 </div>
                                 <div class="product__item__text">
                                     <ul>
                                         <li>{{ anime.get_type_display }}</li>
-                                        <li>{{ anime.year }}</li>
+                                        <li>{{ anime.year.year }}</li>
                                     </ul>
-                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
+                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title|truncatechars:21 }}</a></h5>
                                 </div>
                             </div>
-                            {% endfor %}
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -58,24 +58,24 @@
                         </div>
                     </div>
                     <div class="row">
+                        {% for anime in anime_list %}
                         <div class="col-lg-4 col-md-6 col-sm-6">
-                            {% for anime in anime_list %}
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" style="background-image: url({{ anime.poster.url }});">
                                     <div class="ep">18 / 18</div>
-                                    <div class="comment"><i class="bi bi-chat"></i> 11</div>
+                                    <div class="comment"><i class="bi bi-chat"></i> {{ anime.number_of_comments }}</div>
                                     <div class="view"><i class="bi bi-eye"></i> 9141</div>
                                 </div>
                                 <div class="product__item__text">
                                     <ul>
                                         <li>{{ anime.get_type_display }}</li>
-                                        <li>{{ anime.year }}</li>
+                                        <li>{{ anime.year.year }}</li>
                                     </ul>
-                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
+                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title|truncatechars:21 }}</a></h5>
                                 </div>
                             </div>
-                            {% endfor %}
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -95,24 +95,24 @@
                         </div>
                     </div>
                     <div class="row">
+                        {% for anime in anime_list %}
                         <div class="col-lg-4 col-md-6 col-sm-6">
-                            {% for anime in anime_list %}
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" style="background-image: url({{ anime.poster.url }});">
                                     <div class="ep">18 / 18</div>
-                                    <div class="comment"><i class="bi bi-chat"></i> 11</div>
+                                    <div class="comment"><i class="bi bi-chat"></i> {{ anime.number_of_comments }}</div>
                                     <div class="view"><i class="bi bi-eye"></i> 9141</div>
                                 </div>
                                 <div class="product__item__text">
                                     <ul>
                                         <li>{{ anime.get_type_display }}</li>
-                                        <li>{{ anime.year }}</li>
+                                        <li>{{ anime.year.year }}</li>
                                     </ul>
-                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
+                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title|truncatechars:21 }}</a></h5>
                                 </div>
                             </div>
-                            {% endfor %}
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -133,7 +133,7 @@
                             <div class="product__sidebar__view__item set-bg mix week years" v-for="anim in anime" style="background-image: url(https://cdn1.savepice.ru/uploads/2022/2/15/eb27312f6542810dc0465dcd8b36a3b5-full.jpg);">
                                 <div class="ep">18 / ?</div>
                                 <div class="view"><i class="bi bi-eye"></i> 9141</div>
-                                <h5><a href="#">{{ anim.title }}</a></h5>
+                                <h5><a href="#">{{ anim.title|truncatechars:21 }}</a></h5>
                             </div>
                         </div>
                     </div>

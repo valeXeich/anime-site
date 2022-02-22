@@ -1,5 +1,3 @@
-from django.db import models
-
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
@@ -9,9 +7,13 @@ User = get_user_model()
 
 class Genre(models.Model):
     name = models.CharField('Жанр', max_length=250)
+    url = models.SlugField(unique=True)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('anime:genre_detail', kwargs={'slug': self.url})
 
 
 class Directors(models.Model):
@@ -67,11 +69,15 @@ class Anime(models.Model):
     description = models.TextField('Описание')
     year = models.DateField('Год выпуска')
     total_series = models.PositiveIntegerField('Кол-во серий')
+    number_of_comments = models.PositiveSmallIntegerField('Количество комментариев', default=0, blank=True)
     status = models.CharField('Статус', max_length=200, choices=STATUS_ANIME)
     age_rating = models.CharField('Возрастной рейтинг', max_length=200, choices=AGE_RATING)
     season = models.CharField('Сезон', max_length=200, choices=SEASON_ANIME)
     type = models.CharField('Тип', max_length=200, choices=TYPE_ANIME)
     url = models.SlugField(unique=True)
+
+    class Meta:
+        ordering = ['title']
 
     def __str__(self):
         return self.title
@@ -162,3 +168,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return 'Комментарий: {}'.format(self.author)
+
+    def get_absolute_url(self):
+        return reverse('anime:delete_comment', kwargs={'pk': self.pk})

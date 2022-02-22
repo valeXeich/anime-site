@@ -4,11 +4,14 @@ from .models import *
 
 @admin.register(Anime)
 class AnimeAdmin(admin.ModelAdmin):
-
     prepopulated_fields = {'url': ('title',)}
 
 
-admin.site.register(Genre)
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'url': ('name',)}
+
+
 admin.site.register(Directors)
 admin.site.register(Studio)
 admin.site.register(Profile)
