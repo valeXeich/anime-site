@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.forms import ModelForm, TextInput, Select, FileInput
+from django.forms import ModelForm, TextInput, Select, FileInput, Textarea
 from .models import Profile
 
 
@@ -16,9 +16,9 @@ class ProfileUpdateForm(ModelForm):
             'avatar': 'Аватар'
         }
         widgets = {
-            'description': TextInput(),
+            'description': Textarea(attrs={'placeholder': 'Описание', 'rows': 4, 'id': 'description'}),
             'date_birth': TextInput(attrs={'type': 'date'}),
-            'sex': Select(),
-            'avatar': FileInput(),
+            'sex': Select(attrs={'class': 'form-select form-select-sm'}),
+            'avatar': FileInput(attrs={'type': 'file'}),
         }
 

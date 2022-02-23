@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView
@@ -52,10 +52,14 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, DetailView):
         anime_slug = kwargs.get('slug')
         anime = Anime.objects.get(url=anime_slug)
         ip = get_client_ip(request)
-
         views_ip, created = Ip.objects.get_or_create(ip=ip)
         anime.views.add(views_ip)
         return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['profile'] = self.profile
+        return context
 
 
 class ProfileView(ProfileMixin, AnimeListMixin, DetailView):

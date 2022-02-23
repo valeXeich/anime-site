@@ -8,23 +8,26 @@
       <div class="panel">
           <div class="user-heading round">
               <a href="#">
-                  <img src="https://wallpaperaccess.com/full/3759075.jpg" alt="">
+                  {% if profile.avatar %}
+                  <img src="{{ profile.avatar.url }}" alt="">
+                  {% else %}
+                  <img src="https://i.pinimg.com/736x/57/3f/22/573f22a1aa17b366f5489745dc4704e1.jpg" alt="">
+                  {% endif %}
               </a>
-              <h1 class="color-white">{{ profile.user }}</h1>
-              <p>deydey@theEmail.com</p>
+              <h1 class="color-white" style="color: #fff;">{{ profile.user }}</h1>
           </div>
 
           <ul>
               <li class="active"><a href="#"> <i class="fa fa-user"></i> Profile</a></li>
               <li><a href="#"> <i class="fa fa-calendar"></i> Recent Activity <span class="label label-warning pull-right r-activity">9</span></a></li>
-              <li><a href="#"> <i class="fa fa-edit"></i> Edit profile</a></li>
+              <li><a href="{% url 'anime:profile_update' pk=profile.pk %}"> <i class="fa fa-edit"></i> Edit profile</a></li>
           </ul>
       </div>
   </div>
   <div class="profile-info col-md-9">
       <div class="panel">
           <div class="bio-graph-heading">
-              Aliquam ac magna metus. Nam sed arcu non tellus fringilla fringilla ut vel ispum. Aliquam ac magna metus.
+              {{ profile.description }}
           </div>
           <div id="status-menu" class="status-menu-container mt-2" >
               <div class="anime text-center">
