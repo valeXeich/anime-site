@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.forms import ModelForm, TextInput, Select, FileInput, Textarea
-from .models import Profile
+from django.forms import ModelForm, TextInput, Select, FileInput, Textarea, ModelChoiceField, RadioSelect
+from .models import Profile, Rating, RatingStar
 
 
 User = get_user_model()
@@ -22,3 +22,13 @@ class ProfileUpdateForm(ModelForm):
             'avatar': FileInput(attrs={'type': 'file'}),
         }
 
+
+class RatingForm(ModelForm):
+
+    star = ModelChoiceField(
+        queryset=RatingStar.objects.all(), widget=RadioSelect(), empty_label=None
+    )
+
+    class Meta:
+        model = Rating
+        fields = ['star', ]

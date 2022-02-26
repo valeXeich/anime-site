@@ -24,8 +24,9 @@ class AnimeListMixin(View):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = User.objects.get(id=request.user.id)
-            anime_list = AnimeList.objects.filter(owner=user).first()
+            profile = Profile.objects.get(user=user)
+            anime_list = AnimeList.objects.filter(owner=profile).first()
             if not anime_list:
-                anime_list = AnimeList.objects.create(owner=user)
+                anime_list = AnimeList.objects.create(owner=profile)
         self.anime_list = anime_list
         return super().dispatch(request, *args, **kwargs)

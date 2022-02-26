@@ -27,37 +27,45 @@
   <div class="profile-info col-md-9">
       <div class="panel">
           <div class="bio-graph-heading">
+              {% if profile.description %}
               {{ profile.description }}
+              {% else %}
+              Пусто
+              {% endif %}
           </div>
           <div id="status-menu" class="status-menu-container mt-2" >
               <div class="anime text-center">
-                 <a href="{% url 'anime:watching_now' pk=anime_throw.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">СМОТРЮ</button></a>
+                 <a href="{% url 'anime:profile_detail' pk=profile.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">СМОТРЮ</button></a>
                   <a href="{% url 'anime:will_watching' pk=anime_throw.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">БУДУ СМОТРЕТЬ</button></a>
                   <a href="{% url 'anime:viewed' pk=anime_throw.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">ПРОСМОТРЕНО</button></a>
-                  <button class="btn btn-outline-danger btn-lg mx-1">БРОШЕНО</button>
+                  <button class="btn btn btn-danger btn-lg mx-1">БРОШЕНО</button>
                   <a href="{% url 'anime:favorite' pk=anime_throw.pk %}"><button class="btn btn-outline-danger btn-lg mx-1">ЛЮБИМЫЕ</button></a>
               </div>
           </div>
-          <table class="table table-dark table-hover mt-2">
+          {% if anime_throw.throw.all %}
+          <table class="table table table-hover mt-2" style="background-color: #070720">
       <thead>
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">Image</th>
-      <th scope="col">Title</th>
-      <th scope="col">Rating</th>
+      <th scope="col" style="color: #fff;">Image</th>
+      <th scope="col" style="color: #fff;">Title</th>
+      <th scope="col" style="color: #fff;">Rating</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody style="color: #fff;">
   {% for throw in anime_throw.throw.all %}
     <tr>
-      <th scope="row">1</th>
       <td><img src="{{ throw.anime.poster.url }}" class="image"></td>
-      <td>{{ throw.anime.title }}</td>
-      <td>1.9</td>
+      <td style="color: #fff;">{{ throw.anime.title }}</td>
+      <td style="color: #fff;">1.9</td>
     </tr>
   {% endfor %}
   </tbody>
+    {% else %}
+          <div class="bio-graph-heading mt-2">
+              Ваш список пуст
+          </div>
 
+          {% endif %}
   </table>
       </div>
   </div>

@@ -108,7 +108,7 @@ class Profile(models.Model):
 
 
 class AnimeList(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Владелец списка')
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Владелец списка')
     watching_now = models.ManyToManyField('WatchingNow', verbose_name='Смотрю', blank=True)
     will_watch = models.ManyToManyField('WillWatch', verbose_name='Буду смотреть', blank=True)
     viewed = models.ManyToManyField('Viewed', verbose_name='Просмотрено', blank=True)
@@ -120,7 +120,7 @@ class AnimeList(models.Model):
 
 
 class WatchingNow(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE, blank=True, null=True)
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE)
 
@@ -129,7 +129,7 @@ class WatchingNow(models.Model):
 
 
 class WillWatch(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE, blank=True, null=True)
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE)
 
@@ -138,7 +138,7 @@ class WillWatch(models.Model):
 
 
 class Viewed(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE, blank=True, null=True)
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE, related_name='related_viewed')
 
@@ -147,7 +147,7 @@ class Viewed(models.Model):
 
 
 class Throw(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE, blank=True, null=True)
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE, related_name='related_throw')
 
@@ -156,7 +156,7 @@ class Throw(models.Model):
 
 
 class Favorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE, blank=True, null=True)
     anime_list = models.ForeignKey(AnimeList, on_delete=models.CASCADE, related_name='related_favorite')
 
@@ -173,3 +173,22 @@ class Comment(models.Model):
 
     def __str__(self):
         return 'Комментарий: {}'.format(self.author)
+
+
+class RatingStar(models.Model):
+    value = models.SmallIntegerField('Значение', default=0)
+
+    def __str__(self):
+        return f'{self.value}'
+
+    class Meta:
+        ordering = ['-value']
+
+
+class Rating(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Профиль')
+    star = models.ForeignKey(RatingStar, on_delete=models.CASCADE, verbose_name='Звезды')
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, verbose_name='Аниме')
+
+    def __str__(self):
+        return '{}, Звезда: {}, Аниме: {}'.format(self.profile, self.star, self.anime)
