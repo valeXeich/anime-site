@@ -11,10 +11,14 @@
                             <div class="comment"><i class="bi bi-chat"></i> 11</div>
                             <div class="view"><i class="bi bi-eye"></i> {{ anime_detail.total_views }}</div>
                         </div>
-                        <a href="{% url 'anime:add_to_watching' slug=anime_detail.url %}"><button class="btn btn-primary">Смотрю</button></a>
-                        <a href="{% url 'anime:add_to_will_watching' slug=anime_detail.url %}"><button class="btn btn-primary">Буду смотреть</button></a>
-                        <a href="{% url 'anime:add_to_viewed' slug=anime_detail.url %}"><button class="btn btn-primary">Просмотрено</button></a>
-                        <a href="{% url 'anime:add_to_throw' slug=anime_detail.url %}"><button class="btn btn-primary">Брошено</button></a>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                        <a href="{% url 'anime:add_to_watching' slug=anime_detail.url %}"><button class="btn btn-dark btn-sm" style="width: 95.5px;">Смотрю</button></a>
+                        <a href="{% url 'anime:add_to_will_watching' slug=anime_detail.url %}"><button class="btn btn-dark btn-sm" style="width: 115px;">Буду смотреть</button></a>
+                        <a href="{% url 'anime:add_to_throw' slug=anime_detail.url %}"><button class="btn btn-dark btn-sm" style="width: 95.5px;">Брошено</button></a>
+                        </div>
+                        <div class="d-grid gap-2">
+                        <a href="{% url 'anime:add_to_viewed' slug=anime_detail.url %}"><button class="btn btn-dark" style="width: 305px;">Просмотрено</button></a>
+                            </div>
                     </div>
                     <div class="col-lg-9">
                         <div class="anime__details__text">
@@ -73,35 +77,34 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="anime__video__player">
-                        <video id="player" playsinline controls style="background-image: url(https://wallpaperaccess.com/full/6319352.jpg);" >
-                            <source src="/media/1.mp4" type="/media/mp4" />
-                            <!-- Captions are optional -->
-                            <track kind="captions" label="English captions" src="#" srclang="en" default />
+                        {% for x in video %}
+                        <video
+                        id="my-video"
+                        class="video-js"
+                        controls
+                        preload="auto"
+                        width="930"
+                        height="533"
+                        poster="{{ x.thumb.url }}"
+                        data-setup="{
+                            'controls': true,
+                            'autoplay': false,
+                            'preload': auto,
+                        }"
+                        >
+
+                        <source src="{{ x.video.url }}" type="video/mp4">
+
                         </video>
+                        {% endfor %}
                     </div>
                     <div class="anime__details__episodes">
                         <div class="section-title">
                             <h5>List Name</h5>
                         </div>
-                        <a href="#">Ep 01</a>
-                        <a href="#">Ep 02</a>
-                        <a href="#">Ep 03</a>
-                        <a href="#">Ep 04</a>
-                        <a href="#">Ep 05</a>
-                        <a href="#">Ep 06</a>
-                        <a href="#">Ep 07</a>
-                        <a href="#">Ep 08</a>
-                        <a href="#">Ep 09</a>
-                        <a href="#">Ep 10</a>
-                        <a href="#">Ep 11</a>
-                        <a href="#">Ep 12</a>
-                        <a href="#">Ep 13</a>
-                        <a href="#">Ep 14</a>
-                        <a href="#">Ep 15</a>
-                        <a href="#">Ep 16</a>
-                        <a href="#">Ep 17</a>
-                        <a href="#">Ep 18</a>
-                        <a href="#">Ep 19</a>
+                        {% for i in video %}
+                        <a href="#">{{ i.name }}</a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

@@ -81,6 +81,7 @@ class Anime(models.Model):
     type = models.CharField('Тип', max_length=200, choices=TYPE_ANIME)
     views = models.ManyToManyField(Ip, verbose_name='Просмотры', related_name='anime_views', blank=True)
     rating = models.ManyToManyField('Rating', verbose_name='Рейтинг', related_name='related_rating')
+    anime_video = models.ManyToManyField('Video', verbose_name='Видео', related_name='related_video')
     url = models.SlugField(unique=True)
 
     def __str__(self):
@@ -197,3 +198,13 @@ class Rating(models.Model):
 
     def __str__(self):
         return '{}, Звезда: {}, Аниме: {}'.format(self.profile, self.star, self.anime)
+
+
+class Video(models.Model):
+    name = models.CharField(max_length=100)
+    video = models.FileField(upload_to='video/')
+    thumb = models.FileField(upload_to='thumb/')
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, related_name='related_series')
+
+    def __str__(self):
+        return self.name

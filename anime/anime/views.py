@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView
 
 from .forms import ProfileUpdateForm, RatingForm
-from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip, Rating, RatingStar
+from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip, Rating, RatingStar, Video
 from .mixins import ProfileMixin, AnimeListMixin
 
 User = get_user_model()
@@ -64,6 +64,7 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, DetailView):
         context['profile'] = self.profile
         context['star_form'] = RatingForm()
         context['cacl_rating'] = Rating.objects.filter(anime=anime).aggregate(Avg('star')).get('star__avg')
+        context['video'] = Video.objects.filter(anime=anime)
         return context
 
 
