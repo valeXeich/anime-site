@@ -59,7 +59,7 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, DetailView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-        anime = kwargs.get('object0')
+        anime = kwargs.get('object')
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
         context['star_form'] = RatingForm()
@@ -304,6 +304,9 @@ class AddStarRating(View):
                 anime_id=int(request.POST.get('anime')),
                 defaults={'star_id': int(request.POST.get('star'))}
             )
+            anime = Anime.objects.get(id=int(request.POST.get('anime')))
+            rating = Rating.objects.get(anime=anime, profile=prof)
+            anime.rating.add(rating)
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)

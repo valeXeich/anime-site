@@ -2,6 +2,7 @@ from django.db import models
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Avg
 from django.urls import reverse
 
 User = get_user_model()
@@ -79,6 +80,7 @@ class Anime(models.Model):
     season = models.CharField('Сезон', max_length=200, choices=SEASON_ANIME)
     type = models.CharField('Тип', max_length=200, choices=TYPE_ANIME)
     views = models.ManyToManyField(Ip, verbose_name='Просмотры', related_name='anime_views', blank=True)
+    rating = models.ManyToManyField('Rating', verbose_name='Рейтинг', related_name='related_rating')
     url = models.SlugField(unique=True)
 
     def __str__(self):
@@ -89,6 +91,9 @@ class Anime(models.Model):
 
     def total_views(self):
         return self.views.count()
+
+    def avg_rating(self):
+        return self.rating.aggregate(Avg('star')).get('star__avg')
 
 
 class Profile(models.Model):
@@ -188,7 +193,7 @@ class RatingStar(models.Model):
 class Rating(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Профиль')
     star = models.ForeignKey(RatingStar, on_delete=models.CASCADE, verbose_name='Звезды')
-    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, verbose_name='Аниме')
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, verbose_name='Аниме', related_name='related_anime')
 
     def __str__(self):
         return '{}, Звезда: {}, Аниме: {}'.format(self.profile, self.star, self.anime)
