@@ -18,6 +18,9 @@ from .views import (
     UpdateProfileView,
     AddStarRating,
     DisplayVideo,
+    DeleteCommentView,
+    GenreListView,
+    GenreDetailView,
 )
 
 app_name = 'anime'
@@ -41,6 +44,9 @@ urlpatterns = [
     path('add-to-throw/<slug:slug>', AddToThrow.as_view(), name='add_to_throw'),
     path('add-to-favorite/<slug:slug>', AddToFavorite.as_view(), name='add_to_favorite'),
 
+    path('anime/genres/', GenreListView.as_view(), name='genre_list'),
+    path('anime/genres/<slug:slug>', GenreDetailView.as_view(), name='genre_detail'),
+    path('comment/delete/<int:pk>', DeleteCommentView.as_view(), name='delete_comment')
 ]
 
 if settings.DEBUG:
