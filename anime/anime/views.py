@@ -60,11 +60,43 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         anime = kwargs.get('object')
+        video_id = kwargs.get('pk')
+        print(kwargs)
+        anime_list = AnimeList.objects.get(owner=self.profile)
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
         context['star_form'] = RatingForm()
         context['cacl_rating'] = Rating.objects.filter(anime=anime).aggregate(Avg('star')).get('star__avg')
         context['video'] = Video.objects.filter(anime=anime)
+        try:
+            context['watching_now'] = anime_list.watching_now.get(anime=anime)
+        except WatchingNow.DoesNotExist:
+            None
+        try:
+            context['will_watch'] = anime_list.will_watch.get(anime=anime)
+        except WillWatch.DoesNotExist:
+            None
+        try:
+            context['throw'] = anime_list.throw.get(anime=anime)
+        except Throw.DoesNotExist:
+            None
+        try:
+            context['viewed'] = anime_list.viewed.get(anime=anime)
+        except Viewed.DoesNotExist:
+            None
+        return context
+
+
+class DisplayVideo(ProfileMixin, DetailView):
+    model = Anime
+    template_name = 'anime/anime_video.html'
+    slug_field = 'url'
+
+    def get_context_data(self, **kwargs):
+        anime = kwargs.get('object')
+        context = super().get_context_data(**kwargs)
+        context['video'] = Video.objects.filter(anime=anime)
+        context['profile'] = self.profile
         return context
 
 
@@ -311,7 +343,5 @@ class AddStarRating(View):
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)
-
-
 
 

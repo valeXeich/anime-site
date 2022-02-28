@@ -16,12 +16,8 @@
               </a>
               <h1 class="color-white" style="color: #fff;">{{ profile.user }}</h1>
           </div>
-
-          <ul>
-              <li class="active"><a href="#"> <i class="fa fa-user"></i> Profile</a></li>
-              <li><a href="#"> <i class="fa fa-calendar"></i> Recent Activity <span class="label label-warning pull-right r-activity">9</span></a></li>
-              <li><a href="{% url 'anime:profile_update' pk=profile.pk %}"> <i class="fa fa-edit"></i> Edit profile</a></li>
-          </ul>
+            <a href="{% url 'anime:profile_update' pk=profile.pk %}"><button class="btn btn-danger mt-1" style="width: 305px;"><i class="fa fa-edit"></i> Редактировать</button></a>
+<!--          <i class="fa fa-edit"></i>-->
       </div>
   </div>
   <div class="profile-info col-md-9">
@@ -54,8 +50,8 @@
   <tbody style="color: #fff;">
   {% for watch in watching.watching_now.all %}
     <tr>
-      <td><img src="{{ watch.anime.poster.url }}" class="image"></td>
-      <td style="color: #fff;">{{ watch.anime.title }}</td>
+      <td><a href="{% url 'anime:anime_detail' slug=watch.anime.url %}"><img src="{{ watch.anime.poster.url }}" class="image"></a></td>
+      <td style="color: #fff;"><a href="{% url 'anime:anime_detail' slug=watch.anime.url %}">{{ watch.anime.title }}</a></td>
       <td style="color: #fff;">{{ watch.anime.avg_rating }}</td>
     </tr>
   {% endfor %}

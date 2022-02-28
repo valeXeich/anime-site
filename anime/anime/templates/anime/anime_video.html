@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="anime-details spad">
+    <div class="container">
+<div class="anime__video__player">
+    {% for i in video %}
+    <h2 class="text-center m-2 color">{{ i.name }}</h2>
+    <video
+            id="my-video"
+            class="video-js"
+            controls
+            preload="auto"
+            width="930"
+            height="533"
+            poster="{{ i.thumb.url }}"
+            data-setup="{
+              'controls': true,
+              'autoplay': false,
+              'preload': auto,
+            }">
+        <source src="{{ i.video.url }}" type="video/mp4">
+    </video>
+    {% endfor %}
+</div>
+        </div>
+</section>
+<style>
+    .color {
+        color: white;
+    }
+</style>
+{% endblock content %}
