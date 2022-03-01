@@ -83,8 +83,8 @@ class Anime(models.Model):
     season = models.CharField('Сезон', max_length=200, choices=SEASON_ANIME)
     type = models.CharField('Тип', max_length=200, choices=TYPE_ANIME)
     views = models.ManyToManyField(Ip, verbose_name='Просмотры', related_name='anime_views', blank=True)
-    rating = models.ManyToManyField('Rating', verbose_name='Рейтинг', related_name='related_rating')
-    anime_video = models.ManyToManyField('Video', verbose_name='Видео', related_name='related_video')
+    rating = models.ManyToManyField('Rating', verbose_name='Рейтинг', related_name='related_rating', blank=True)
+    anime_video = models.ManyToManyField('Video', verbose_name='Видео', related_name='related_video', blank=True)
     url = models.SlugField(unique=True)
 
     class Meta:

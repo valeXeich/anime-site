@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
@@ -30,6 +30,8 @@ class AnimeListView(ProfileMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
+        context['popular'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt', '-number_of_comments')
+        context['trending'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-year', '-views_cnt', '-number_of_comments')
         return context
 
 
@@ -60,15 +62,12 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         anime = kwargs.get('object')
-        video_id = kwargs.get('pk')
-        print(kwargs)
         anime_list = AnimeList.objects.get(owner=self.profile)
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
         context['comments'] = self.get_comments_for_anime()
         context['star_form'] = RatingForm()
         context['cacl_rating'] = Rating.objects.filter(anime=anime).aggregate(Avg('star')).get('star__avg')
-        context['video'] = Video.objects.filter(anime=anime)
         try:
             context['watching_now'] = anime_list.watching_now.get(anime=anime)
         except WatchingNow.DoesNotExist:
@@ -360,14 +359,18 @@ class DeleteCommentView(DeleteView):
         return self.delete(request, *args, **kwargs)
 
 
-class GenreListView(ListView):
+class GenreListView(ProfileMixin, ListView):
     model = Genre
     queryset = Genre.objects.all()
     context_object_name = 'genres'
     template_name = 'anime/genre.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.profile
+        return context
 
-class GenreDetailView(DetailView, MultipleObjectMixin):
+class GenreDetailView(ProfileMixin, DetailView, MultipleObjectMixin):
     model = Genre
     paginate_by = 18
     slug_field = 'url'
@@ -376,4 +379,18 @@ class GenreDetailView(DetailView, MultipleObjectMixin):
     def get_context_data(self, **kwargs):
         object_list = Anime.objects.filter(genre=self.get_object())
         context = super().get_context_data(object_list=object_list, **kwargs)
+        context['profile'] = self.profile
         return context
+
+
+class Search(ProfileMixin, ListView):
+    model = Anime
+    template_name = 'search.html'
+
+    def get_context_data(self, **kwargs):
+        anime = Anime.objects.filter(title__icontains=self.request.GET.get('q'))
+        context = super().get_context_data(**kwargs)
+        context['q'] = anime
+        context['profile'] = self.profile
+        return context
+

@@ -8,6 +8,7 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="anime__details__pic set-bg" style="background-image: url({{ anime_detail.poster.url }});">
+                            <div class="favorite"><button class="btn btn-danger"><i class="bi bi-heart"></i></button></div>
                             <div class="comment"><i class="bi bi-chat"></i> {{ anime_detail.number_of_comments }}</div>
                             <div class="view"><i class="bi bi-eye"></i> {{ anime_detail.total_views }}</div>
                         </div>
@@ -52,12 +53,7 @@
                                         {% endfor %}
                                      </span>
                                     </form>
-                            {% if cacl_rating %}
-                                <span>Средний рейтинг: {{ cacl_rating }}</span>
-                            {% else %}
-                            <span>Нету оценок</span>
-                            {% endif %}
-                            <p>{{ anime_detail.description }}</p>
+                            <p class="mt-2">{{ anime_detail.description }}</p>
                             <div class="anime__details__widget">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
@@ -72,9 +68,13 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         <ul>
-                                            <li><span>Rating:</span> 8.5 / 161 times</li>
+                                            {% if cacl_rating %}
+                                            <li><span>Средний рейтинг:</span>{{ cacl_rating }}</li>
+                                            {% else %}
+                                            <li><span>Рейтинг:</span>Нету оценок</li>
+                                            {% endif %}
                                             <li><span>Quality:</span> HD</li>
-                                            <li><span>Views:</span> 131,541</li>
+                                            <li><span>Views:</span>{{ anime_detail.total_views }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -152,6 +152,15 @@
         </div>
     </section>
 <style>
+
+.favorite {
+    margin-left: 10px;
+    padding-top: 10px;
+}
+.favorite button {
+    opacity: 0.8;
+}
+
 /* Checkbox stars */
 .rating {
   overflow: hidden;

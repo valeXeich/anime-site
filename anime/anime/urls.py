@@ -21,6 +21,7 @@ from .views import (
     DeleteCommentView,
     GenreListView,
     GenreDetailView,
+    Search,
 )
 
 app_name = 'anime'
@@ -46,7 +47,9 @@ urlpatterns = [
 
     path('anime/genres/', GenreListView.as_view(), name='genre_list'),
     path('anime/genres/<slug:slug>', GenreDetailView.as_view(), name='genre_detail'),
-    path('comment/delete/<int:pk>', DeleteCommentView.as_view(), name='delete_comment')
+    path('comment/delete/<int:pk>', DeleteCommentView.as_view(), name='delete_comment'),
+
+    path('search/', Search.as_view(), name='search'),
 ]
 
 if settings.DEBUG:
