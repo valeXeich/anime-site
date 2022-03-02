@@ -22,12 +22,18 @@ from .views import (
     GenreListView,
     GenreDetailView,
     Search,
+    TrendingView,
+    PopularView,
+    RecentView,
 )
 
 app_name = 'anime'
 
 urlpatterns = [
     path('', AnimeListView.as_view(), name='anime_list'),
+    path('anime/trending', TrendingView.as_view(), name='anime_trending'),
+    path('anime/popular', PopularView.as_view(), name='anime_popular'),
+    path('anime/recent', RecentView.as_view(), name='anime_recent'),
     path('anime/<slug:slug>', AnimeDetailView.as_view(), name='anime_detail'),
     path('profile/<int:pk>', ProfileView.as_view(), name='profile_detail'),
     path('profile/<int:pk>/update', UpdateProfileView.as_view(), name='profile_update'),
@@ -47,7 +53,7 @@ urlpatterns = [
 
     path('anime/genres/', GenreListView.as_view(), name='genre_list'),
     path('anime/genres/<slug:slug>', GenreDetailView.as_view(), name='genre_detail'),
-    path('comment/delete/<int:pk>', DeleteCommentView.as_view(), name='delete_comment'),
+    path('comment/delete/<slug:slug>/<int:pk>', DeleteCommentView.as_view(), name='delete_comment'),
 
     path('search/', Search.as_view(), name='search'),
 ]

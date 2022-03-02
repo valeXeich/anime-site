@@ -77,7 +77,7 @@ class Anime(models.Model):
     description = models.TextField('Описание')
     year = models.DateField('Год выпуска')
     total_series = models.PositiveIntegerField('Кол-во серий')
-    number_of_comments = models.PositiveSmallIntegerField('Количество комментариев', default=0, blank=True)
+    anime_comments = models.ManyToManyField('Comment', verbose_name='Комментарии', blank=True, related_name='related_comments')
     status = models.CharField('Статус', max_length=200, choices=STATUS_ANIME)
     age_rating = models.CharField('Возрастной рейтинг', max_length=200, choices=AGE_RATING)
     season = models.CharField('Сезон', max_length=200, choices=SEASON_ANIME)
@@ -98,6 +98,9 @@ class Anime(models.Model):
 
     def total_views(self):
         return self.views.count()
+
+    def total_comments(self):
+        return self.anime_comments.count()
 
     def avg_rating(self):
         return self.rating.aggregate(Avg('star')).get('star__avg')
@@ -184,10 +187,11 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='replies')
 
     def __str__(self):
-        return 'Комментарий: {}'.format(self.author)
+        return 'Комментарий: {}'.format(self.anime)
 
     def get_absolute_url(self):
         return reverse('anime:delete_comment', kwargs={'pk': self.pk})
+
 
 
 class RatingStar(models.Model):

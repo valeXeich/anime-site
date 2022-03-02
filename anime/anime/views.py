@@ -12,6 +12,45 @@ from .mixins import ProfileMixin, AnimeListMixin, CommentMixin
 
 User = get_user_model()
 
+class TrendingView(ProfileMixin, ListView):
+    model = Anime
+    queryset = Anime.objects.all().annotate(views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt', '-year')
+    context_object_name = 'trending'
+    template_name = 'anime/trending.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.profile
+        return context
+
+
+class PopularView(ProfileMixin, ListView):
+    model = Anime
+    queryset = Anime.objects.all().annotate(views_cnt=Count('views'),
+                                                          comm_cnt=Count('anime_comments')).order_by('-views_cnt',
+                                                                                                     '-comm_cnt')
+    context_object_name = 'popular'
+    template_name = 'anime/popular.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.profile
+        return context
+
+
+class RecentView(ProfileMixin, ListView):
+    model = Anime
+    queryset = Anime.objects.all().order_by('-year')
+    context_object_name = 'recent'
+    template_name = 'anime/recent.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.profile
+        return context
+
+
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -28,10 +67,25 @@ class AnimeListView(ProfileMixin, ListView):
     template_name = 'anime/anime_list.html'
 
     def get_context_data(self, *args, **kwargs):
+        comments = Comment.objects.all().order_by('-created_date')
+        comment_list = []
+        for i in comments:
+            for j in comments:
+                if i.anime == j.anime:
+                    if i.anime not in comment_list:
+                        comment_list.append(i.anime)
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
-        context['popular'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt', '-number_of_comments')
-        context['trending'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-year', '-views_cnt', '-number_of_comments')
+        context['popular'] = Anime.objects.all().annotate(views_cnt=Count('views'),
+                                                          comm_cnt=Count('anime_comments')).order_by('-views_cnt',
+                                                                                                     '-comm_cnt')[:6]
+        context['trending'] = Anime.objects.all().annotate(views_cnt=Count('views'),
+                                                           comm_cnt=Count('anime_comments')).order_by('-views_cnt',
+                                                                                                      '-comm_cnt',
+                                                                                                      '-year')[:6]
+        context['recent'] = Anime.objects.all().order_by('-year')[:6]
+        context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
+        context['last_comment'] = comment_list[:4]
         return context
 
 
@@ -62,10 +116,13 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         anime = kwargs.get('object')
+        genre = anime.genre.all()
+        similar_anime = Anime.objects.filter(genre__in=genre).exclude(id=anime.id).distinct()[:4]
         anime_list = AnimeList.objects.get(owner=self.profile)
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
         context['comments'] = self.get_comments_for_anime()
+        context['similar_anime'] = similar_anime
         context['star_form'] = RatingForm()
         context['cacl_rating'] = Rating.objects.filter(anime=anime).aggregate(Avg('star')).get('star__avg')
         try:
@@ -345,18 +402,15 @@ class AddStarRating(View):
             return HttpResponse(status=400)
 
 
-class DeleteCommentView(DeleteView):
-    model = Comment
-    template_name = 'anime/anime_detail.html'
+class DeleteCommentView(View):
 
-    def get_success_url(self):
-        return reverse_lazy('anime:anime_detail', kwargs={'slug': self.get_object().anime.url})
-
-    def post(self, request, *args, **kwargs):
-        anime = Anime.objects.get(pk=self.get_object().anime.pk)
-        anime.number_of_comments -= 1
-        anime.save()
-        return self.delete(request, *args, **kwargs)
+    def get(self, request, **kwargs):
+        anime_slug = kwargs.get('slug')
+        anime = Anime.objects.get(url=anime_slug)
+        comment = Comment.objects.get(id=kwargs.get('pk'))
+        anime.anime_comments.remove(comment)
+        comment.delete()
+        return redirect('anime:anime_detail', slug=anime_slug)
 
 
 class GenreListView(ProfileMixin, ListView):

@@ -56,8 +56,7 @@ class CommentMixin(FormMixin):
         self.object.anime = self.get_object()
         self.object.save()
         anime = Anime.objects.get(pk=self.get_object().pk)
-        anime.number_of_comments += 1
-        anime.save()
+        anime.anime_comments.add(self.object)
         return super().form_valid(form)
 
     def get_comments_for_anime(self):

@@ -9,7 +9,7 @@
                     <div class="col-lg-3">
                         <div class="anime__details__pic set-bg" style="background-image: url({{ anime_detail.poster.url }});">
                             <div class="favorite"><button class="btn btn-danger"><i class="bi bi-heart"></i></button></div>
-                            <div class="comment"><i class="bi bi-chat"></i> {{ anime_detail.number_of_comments }}</div>
+                            <div class="comment"><i class="bi bi-chat"></i> {{ anime_detail.total_comments }}</div>
                             <div class="view"><i class="bi bi-eye"></i> {{ anime_detail.total_views }}</div>
                         </div>
                         <div class="btn-group" role="group" aria-label="Basic example">
@@ -62,7 +62,7 @@
                                             <li><span>Студия:</span> {{ anime_detail.studio }}</li>
                                             <li><span>Дата выхода:</span> {{ anime_detail.year.year }}</li>
                                             <li><span>Статус:</span> {{ anime_detail.get_status_display }}</li>
-                                            <li><span>Жанры:</span> {{ anime_detail.genre.all|join:", " }}</li>
+                                            <li><span>Жанры:</span> {% for genre in anime_detail.genre.all %}<a href="{% url 'anime:genre_detail' slug=genre.url %}">{{ genre.name }} </a>{% endfor %}</li>
                                             <li><span>Режиссеры:</span> {{ anime_detail.directors.all|join:", " }}</li>
                                         </ul>
                                     </div>
@@ -73,8 +73,8 @@
                                             {% else %}
                                             <li><span>Рейтинг:</span>Нету оценок</li>
                                             {% endif %}
-                                            <li><span>Quality:</span> HD</li>
-                                            <li><span>Views:</span>{{ anime_detail.total_views }}</li>
+                                            <li><span>Качество:</span> HD</li>
+                                            <li><span>Просмотров:</span>{{ anime_detail.total_views }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -116,10 +116,7 @@
                             <h6>{{ comment.author }} -<span> {{ comment.created_date }}</span></h6>
                             <p>{{ comment.text }}</p>
                             {% if comment.author.pk == request.user.pk %}
-                            <form action="{% url 'anime:delete_comment' pk=comment.pk %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn btn-outline-danger" type="submit">Удалить</button>
-                            </form>
+                            <a href="{% url 'anime:delete_comment' slug=anime_detail.url pk=comment.pk %}"><button class="btn btn-outline-danger" type="submit">Удалить</button></a>
                             {% endif %}
                         </div>
                     </div>
@@ -139,13 +136,15 @@
             <div class="col-lg-4 col-md-4">
                         <div class="anime__details__sidebar">
                             <div class="section-title">
-                                <h5>you might like...</h5>
+                                <h5>Похожие</h5>
                             </div>
-                            <div class="product__sidebar__view__item set-bg">
-                                <div class="ep">18 / ?</div>
-                                <div class="view"><i class="fa fa-eye"></i> 9141</div>
-                                <h5><a href="#">Fate/stay night: Heaven's Feel I. presage flower</a></h5>
+                            {% for similar in similar_anime %}
+                            <div class="product__sidebar__view__item set-bg" style="background-image: url({{ similar.poster.url }});">
+                                <div class="ep">{{ similar.total_series }} / {{ similar.total_series }}</div>
+                                <div class="view"><i class="bi bi-eye"></i> {{ similar.total_views }}</div>
+                                <h5><a href="#">{{ similar.title }}</a></h5>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
         </div>
