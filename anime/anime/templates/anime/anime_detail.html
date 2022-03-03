@@ -12,6 +12,7 @@
                             <div class="comment"><i class="bi bi-chat"></i> {{ anime_detail.total_comments }}</div>
                             <div class="view"><i class="bi bi-eye"></i> {{ anime_detail.total_views }}</div>
                         </div>
+                        {% if user.is_authenticated %}
                         <div class="btn-group" role="group" aria-label="Basic example">
                             {% if watching_now %}
                             <a href="{% url 'anime:add_to_watching' slug=anime_detail.url %}"><button class="btn btn-danger btn-sm" style="width: 95.5px;">Смотрю</button></a>
@@ -36,7 +37,9 @@
                         <a href="{% url 'anime:add_to_viewed' slug=anime_detail.url %}"><button class="btn btn-dark" style="width: 305px;">Просмотрено</button></a>
                             {% endif %}
                             </div>
+                        {% endif %}
                     </div>
+
                     <div class="col-lg-9">
                         <div class="anime__details__text">
                             <div class="anime__details__title">
@@ -73,6 +76,7 @@
                                             {% else %}
                                             <li><span>Рейтинг:</span>Нету оценок</li>
                                             {% endif %}
+                                            <li><span>Возрастной рейтинг:</span> {{ anime_detail.get_age_rating_display }}</li>
                                             <li><span>Качество:</span> HD</li>
                                             <li><span>Просмотров:</span>{{ anime_detail.total_views }}</li>
                                         </ul>

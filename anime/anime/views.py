@@ -9,22 +9,32 @@ from django.views.generic.list import MultipleObjectMixin
 from .forms import ProfileUpdateForm, RatingForm
 from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip, Rating, RatingStar, Video, Comment, Genre
 from .mixins import ProfileMixin, AnimeListMixin, CommentMixin
+from .filter import FilterList
 
 User = get_user_model()
 
-class TrendingView(ProfileMixin, ListView):
+class TrendingView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
     queryset = Anime.objects.all().annotate(views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt', '-year')
     context_object_name = 'trending'
     template_name = 'anime/trending.html'
 
     def get_context_data(self, **kwargs):
+        comments = Comment.objects.all().order_by('-created_date')
+        comment_list = []
+        for i in comments:
+            for j in comments:
+                if i.anime == j.anime:
+                    if i.anime not in comment_list:
+                        comment_list.append(i.anime)
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
+        context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
+        context['last_comment'] = comment_list[:4]
         return context
 
 
-class PopularView(ProfileMixin, ListView):
+class PopularView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
     queryset = Anime.objects.all().annotate(views_cnt=Count('views'),
                                                           comm_cnt=Count('anime_comments')).order_by('-views_cnt',
@@ -33,20 +43,38 @@ class PopularView(ProfileMixin, ListView):
     template_name = 'anime/popular.html'
 
     def get_context_data(self, **kwargs):
+        comments = Comment.objects.all().order_by('-created_date')
+        comment_list = []
+        for i in comments:
+            for j in comments:
+                if i.anime == j.anime:
+                    if i.anime not in comment_list:
+                        comment_list.append(i.anime)
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
+        context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
+        context['last_comment'] = comment_list[:4]
         return context
 
 
-class RecentView(ProfileMixin, ListView):
+class RecentView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
     queryset = Anime.objects.all().order_by('-year')
     context_object_name = 'recent'
     template_name = 'anime/recent.html'
 
     def get_context_data(self, **kwargs):
+        comments = Comment.objects.all().order_by('-created_date')
+        comment_list = []
+        for i in comments:
+            for j in comments:
+                if i.anime == j.anime:
+                    if i.anime not in comment_list:
+                        comment_list.append(i.anime)
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
+        context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
+        context['last_comment'] = comment_list[:4]
         return context
 
 
@@ -60,7 +88,18 @@ def get_client_ip(request):
     return ip
 
 
-class AnimeListView(ProfileMixin, ListView):
+class AllAnimeView(ProfileMixin, AnimeListMixin, FilterList, ListView):
+    model = Anime
+    template_name = 'anime/anime_all.html'
+    context_object_name = 'anime_all'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.profile
+        return context
+
+
+class AnimeListView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
     queryset = Anime.objects.all()
     context_object_name = 'anime_list'
@@ -89,7 +128,7 @@ class AnimeListView(ProfileMixin, ListView):
         return context
 
 
-class UpdateProfileView(ProfileMixin, UpdateView):
+class UpdateProfileView(ProfileMixin, AnimeListMixin, UpdateView):
     model = Profile
     form_class = ProfileUpdateForm
     template_name = 'profile/profile_update.html'
@@ -118,7 +157,6 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
         anime = kwargs.get('object')
         genre = anime.genre.all()
         similar_anime = Anime.objects.filter(genre__in=genre).exclude(id=anime.id).distinct()[:4]
-        anime_list = AnimeList.objects.get(owner=self.profile)
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
         context['comments'] = self.get_comments_for_anime()
@@ -126,25 +164,29 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
         context['star_form'] = RatingForm()
         context['cacl_rating'] = Rating.objects.filter(anime=anime).aggregate(Avg('star')).get('star__avg')
         try:
-            context['watching_now'] = anime_list.watching_now.get(anime=anime)
-        except WatchingNow.DoesNotExist:
-            None
-        try:
-            context['will_watch'] = anime_list.will_watch.get(anime=anime)
-        except WillWatch.DoesNotExist:
-            None
-        try:
-            context['throw'] = anime_list.throw.get(anime=anime)
-        except Throw.DoesNotExist:
-            None
-        try:
-            context['viewed'] = anime_list.viewed.get(anime=anime)
-        except Viewed.DoesNotExist:
+            anime_list = AnimeList.objects.get(owner=self.profile)
+            try:
+                context['watching_now'] = anime_list.watching_now.get(anime=anime)
+            except WatchingNow.DoesNotExist:
+                None
+            try:
+                context['will_watch'] = anime_list.will_watch.get(anime=anime)
+            except WillWatch.DoesNotExist:
+                None
+            try:
+                context['throw'] = anime_list.throw.get(anime=anime)
+            except Throw.DoesNotExist:
+                None
+            try:
+                context['viewed'] = anime_list.viewed.get(anime=anime)
+            except Viewed.DoesNotExist:
+                None
+        except AnimeList.DoesNotExist:
             None
         return context
 
 
-class DisplayVideo(ProfileMixin, DetailView):
+class DisplayVideo(ProfileMixin, AnimeListMixin, DetailView):
     model = Anime
     template_name = 'anime/anime_video.html'
     slug_field = 'url'
@@ -343,7 +385,8 @@ class ProfileWillWatchView(ProfileMixin, AnimeListMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.user)
+        user = kwargs.get('object').owner.user
+        context['profile'] = Profile.objects.get(user=user)
         return context
 
 
@@ -355,7 +398,8 @@ class ProfileViewedView(ProfileMixin, AnimeListMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.user)
+        user = kwargs.get('object').owner.user
+        context['profile'] = Profile.objects.get(user=user)
         return context
 
 
@@ -367,7 +411,8 @@ class ProfileThrowView(ProfileMixin, AnimeListMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.user)
+        user = kwargs.get('object').owner.user
+        context['profile'] = Profile.objects.get(user=user)
         return context
 
 
@@ -379,7 +424,8 @@ class ProfileFavoriteView(ProfileMixin, AnimeListMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.user)
+        user = kwargs.get('object').owner.user
+        context['profile'] = Profile.objects.get(user=user)
         return context
 
 
@@ -413,7 +459,7 @@ class DeleteCommentView(View):
         return redirect('anime:anime_detail', slug=anime_slug)
 
 
-class GenreListView(ProfileMixin, ListView):
+class GenreListView(ProfileMixin, AnimeListMixin, ListView):
     model = Genre
     queryset = Genre.objects.all()
     context_object_name = 'genres'
@@ -424,7 +470,7 @@ class GenreListView(ProfileMixin, ListView):
         context['profile'] = self.profile
         return context
 
-class GenreDetailView(ProfileMixin, DetailView, MultipleObjectMixin):
+class GenreDetailView(ProfileMixin, AnimeListMixin, DetailView, MultipleObjectMixin):
     model = Genre
     paginate_by = 18
     slug_field = 'url'
@@ -437,7 +483,7 @@ class GenreDetailView(ProfileMixin, DetailView, MultipleObjectMixin):
         return context
 
 
-class Search(ProfileMixin, ListView):
+class Search(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
     template_name = 'search.html'
 

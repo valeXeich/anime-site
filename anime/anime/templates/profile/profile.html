@@ -16,8 +16,9 @@
               </a>
               <h1 class="color-white" style="color: #fff;">{{ profile.user }}</h1>
           </div>
+          {% if request.user.pk == profile.user.pk %}
             <a href="{% url 'anime:profile_update' pk=profile.pk %}"><button class="btn btn-danger mt-1" style="width: 305px;"><i class="fa fa-edit"></i> Редактировать</button></a>
-<!--          <i class="fa fa-edit"></i>-->
+          {% endif %}
       </div>
   </div>
   <div class="profile-info col-md-9">
@@ -39,7 +40,7 @@
               </div>
           </div>
           {% if watching.watching_now.all %}
-          <table class="table table table-hover mt-2" style="background-color: #070720">
+          <table class="table table table-hover mt-2" style="background-color: #070720; margin-bottom: 320px;">
       <thead>
     <tr>
       <th scope="col" style="color: #fff;">Image</th>
@@ -59,7 +60,7 @@
 
   </table>
           {% else %}
-          <div class="bio-graph-heading mt-2">
+          <div class="bio-graph-heading mt-2" style="margin-bottom: 450px">
               Ваш список пуст
           </div>
           {% endif %}

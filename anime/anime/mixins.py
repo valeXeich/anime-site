@@ -17,9 +17,9 @@ class ProfileMixin(View):
             profile = Profile.objects.filter(user=user).first()
             if not profile:
                 profile = Profile.objects.create(user=user)
-        if request.user.is_authenticated:
-            self.user = user
-            self.profile = profile
+        else:
+            profile = Profile.objects.filter(for_anonymous_user=True).first()
+        self.profile = profile
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -32,6 +32,8 @@ class AnimeListMixin(View):
             anime_list = AnimeList.objects.filter(owner=profile).first()
             if not anime_list:
                 anime_list = AnimeList.objects.create(owner=profile)
+        else:
+            anime_list = AnimeList.objects.filter(for_anonymous_user=True).first()
         self.anime_list = anime_list
         return super().dispatch(request, *args, **kwargs)
 

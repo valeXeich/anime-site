@@ -112,23 +112,25 @@ class Profile(models.Model):
         ('female', 'Женский'),
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     date_birth = models.DateField('Дата рождения', blank=True, null=True)
     description = models.TextField('Описание', blank=True, null=True)
     sex = models.CharField('Пол', max_length=200, choices=SEX_CHOICES, blank=True, null=True)
     avatar = models.ImageField('Аватар', upload_to='user_avatar/', blank=True, null=True)
+    for_anonymous_user = models.BooleanField(default=False)
 
     def __str__(self):
         return 'Профиль: {}'.format(self.user)
 
 
 class AnimeList(models.Model):
-    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Владелец списка')
+    owner = models.ForeignKey(Profile, null=True, on_delete=models.CASCADE, verbose_name='Владелец списка')
     watching_now = models.ManyToManyField('WatchingNow', verbose_name='Смотрю', blank=True)
     will_watch = models.ManyToManyField('WillWatch', verbose_name='Буду смотреть', blank=True)
     viewed = models.ManyToManyField('Viewed', verbose_name='Просмотрено', blank=True)
     throw = models.ManyToManyField('Throw', verbose_name='Брошено', blank=True)
     favorite = models.ManyToManyField('Favorite', verbose_name='Любимые', blank=True)
+    for_anonymous_user = models.BooleanField(default=False)
 
     def __str__(self):
         return 'Владелец списка: {}'.format(self.owner)

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if request.user.pk == profile.user.pk %}
 <div class="container rounded mycolor mt-5">
     <div class="row" style="margin-bottom: 350px">
         <div class="col-md-4 border-right">
@@ -37,6 +38,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <style>
     #description {
