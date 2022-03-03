@@ -38,6 +38,13 @@
         </div>
     </div>
 </div>
+{% else %}
+<div class="container rounded mycolor mt-5" style="margin-bottom: 50px;">
+    <h1 class="text-center pnf">404</h1>
+    <h2 class="text-center color">Страница не найдена</h2>
+    <h4 class="text-center color mt-2" >Скорее всего, вы попали сюда из-за опечатки в адресе страницы. Попробуйте <a href="{% url 'anime:anime_list' %}">вернуться на главную</a> или свяжитесь с администрацией сайта.</h4>
+    <img src="/media/pngegg.png" class="img">
+</div>
 {% endif %}
 
 <style>
@@ -52,6 +59,27 @@
     }
     label {
        color: #fff;
+    }
+
+    .pnf {
+        color: #e53637;
+    }
+
+    .color {
+        color: #fff;
+    }
+
+    .img {
+        margin-left: 150px;
+    }
+
+    a {
+        color: red;
+    }
+
+    a:hover {
+        color: red;
+        text-decoration: underline;
     }
 </style>
 {% endblock content %}

@@ -132,10 +132,14 @@ class UpdateProfileView(ProfileMixin, AnimeListMixin, UpdateView):
     model = Profile
     form_class = ProfileUpdateForm
     template_name = 'profile/profile_update.html'
-    context_object_name = 'profile'
 
     def get_success_url(self, **kwargs):
         return reverse('anime:profile_detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.profile
+        return context
 
 
 class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
@@ -180,6 +184,10 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
             try:
                 context['viewed'] = anime_list.viewed.get(anime=anime)
             except Viewed.DoesNotExist:
+                None
+            try:
+                context['favorite'] = anime_list.favorite.get(anime=anime)
+            except Favorite.DoesNotExist:
                 None
         except AnimeList.DoesNotExist:
             None

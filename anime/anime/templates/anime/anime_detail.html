@@ -8,7 +8,13 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="anime__details__pic set-bg" style="background-image: url({{ anime_detail.poster.url }});">
-                            <div class="favorite"><button class="btn btn-danger"><i class="bi bi-heart"></i></button></div>
+                            {% if user.is_authenticated %}
+                            {% if favorite %}
+                            <div class="favorite"><a href="{% url 'anime:add_to_favorite' slug=anime_detail.url %}"><button class="btn btn-danger"><i class="bi bi-heart"></i></button></a></div>
+                            {% else %}
+                            <div class="favorite"><a href="{% url 'anime:add_to_favorite' slug=anime_detail.url %}"><button class="btn btn-outline-danger"><i class="bi bi-heart"></i></button></a></div>
+                            {% endif %}
+                            {% endif %}
                             <div class="comment"><i class="bi bi-chat"></i> {{ anime_detail.total_comments }}</div>
                             <div class="view"><i class="bi bi-eye"></i> {{ anime_detail.total_views }}</div>
                         </div>
@@ -84,25 +90,30 @@
                                 </div>
                             </div>
                             <div class="anime__details__btn">
-                                <a href="{% url 'anime:add_to_favorite' slug=anime_detail.url %}" class="follow-btn"><i class="bi bi-heart"></i> Follow</a> <a href="{% url 'anime:anime_video' slug=anime_detail.url %}" class="follow-btn"><i class="bi bi-heart"></i> WATCH</a>
+                                <a href="{% url 'anime:anime_video' slug=anime_detail.url %}" class="follow-btn"><i class="bi bi-collection-play"></i> WATCH</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {% if anime_detail.animeshot_set.all %}
         <section class="anime-details spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="anime__details__episodes">
                         <div class="section-title">
-                            <h5>List Name</h5>
+                            <h5>Кадры</h5>
                         </div>
+                        {% for image in anime_detail.animeshot_set.all %}
+                            <img src="{{ image.shot.url }}" style="width: 310px;">
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </section>
+            {% endif %}
         <div class="row">
             <div class="col-lg-8 col-md-8">
                 <div class="anime__details__review">
@@ -161,7 +172,7 @@
     padding-top: 10px;
 }
 .favorite button {
-    opacity: 0.8;
+    opacity: 1;
 }
 
 /* Checkbox stars */

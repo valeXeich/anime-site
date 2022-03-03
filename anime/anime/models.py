@@ -223,3 +223,11 @@ class Video(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AnimeShot(models.Model):
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, verbose_name='Аниме')
+    shot = models.ImageField('Момент', upload_to='anime_shots/')
+
+    def __str__(self):
+        return 'Кадр: {}'.format(self.anime.title)
