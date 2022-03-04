@@ -68,4 +68,41 @@ class FilterForAnime(ProfileMixin, FilterList, ListView):
         return context
 
 
+class FilterForGenre(ProfileMixin, FilterList, ListView):
+    model = Anime
+    template_name = 'genre_filter.html'
+
+    def get_queryset(self):
+        queryset = Anime.objects.filter(genre__id=self.request.GET.get('get_genre'))
+
+        if 'directors' in self.request.GET:
+            queryset = queryset.filter(directors__in=self.request.GET.getlist('directors'))
+
+        if 'studio' in self.request.GET:
+            queryset = queryset.filter(studio__in=self.request.GET.getlist('studio'))
+
+        if 'year' in self.request.GET:
+            queryset = queryset.filter(year__year__in=self.request.GET.getlist('year'))
+
+        if 'status' in self.request.GET:
+            queryset = queryset.filter(status__in=self.request.GET.getlist('status'))
+
+        if 'age_rating' in self.request.GET:
+            queryset = queryset.filter(age_rating__in=self.request.GET.getlist('age_rating'))
+
+        if 'season' in self.request.GET:
+            queryset = queryset.filter(season__in=self.request.GET.getlist('season'))
+
+        if 'type' in self.request.GET:
+            queryset = queryset.filter(type__in=self.request.GET.getlist('type'))
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        genre = Genre.objects.get(id=self.request.GET.get('get_genre'))
+        context = super().get_context_data(*args, **kwargs)
+        context['anime_filter'] = self.get_queryset()
+        context['profile'] = self.profile
+        context['genre'] = genre
+        return context
+
 

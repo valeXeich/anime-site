@@ -1,13 +1,13 @@
+
 {% extends "base.html" %}
+
 
 {% load i18n %}
 {% load account %}
 
 {% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
 
-    {% if user.is_authenticated %}
-    {% include "account/snippets/already_logged_in.html" %}
-    {% endif %}
+
 
 {% block content %}
 <!-- Normal Breadcrumb Begin -->

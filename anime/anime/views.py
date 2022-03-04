@@ -13,6 +13,7 @@ from .filter import FilterList
 
 User = get_user_model()
 
+
 class TrendingView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
     queryset = Anime.objects.all().annotate(views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt', '-year')
@@ -478,11 +479,38 @@ class GenreListView(ProfileMixin, AnimeListMixin, ListView):
         context['profile'] = self.profile
         return context
 
-class GenreDetailView(ProfileMixin, AnimeListMixin, DetailView, MultipleObjectMixin):
+class GenreDetailView(ProfileMixin, FilterList, AnimeListMixin, DetailView, MultipleObjectMixin):
     model = Genre
     paginate_by = 18
     slug_field = 'url'
     template_name = 'anime/genre_detail.html'
+
+    def get_context_data(self, **kwargs):
+        object_list = Anime.objects.filter(genre=self.get_object())
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['profile'] = self.profile
+        context['genre'] = self.get_object()
+        return context
+
+
+class DirectorsDetailView(ProfileMixin, AnimeListMixin, DetailView, MultipleObjectMixin):
+    model = Genre
+    paginate_by = 18
+    slug_field = 'url'
+    template_name = 'anime/directors_detail.html'
+
+    def get_context_data(self, **kwargs):
+        object_list = Anime.objects.filter(genre=self.get_object())
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['profile'] = self.profile
+        return context
+
+
+class StudioDetailView(ProfileMixin, AnimeListMixin, DetailView, MultipleObjectMixin):
+    model = Genre
+    paginate_by = 18
+    slug_field = 'url'
+    template_name = 'anime/studio_detail.html'
 
     def get_context_data(self, **kwargs):
         object_list = Anime.objects.filter(genre=self.get_object())
