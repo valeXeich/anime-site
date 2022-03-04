@@ -25,7 +25,9 @@ from .views import (
     TrendingView,
     PopularView,
     RecentView,
-    AllAnimeView
+    AllAnimeView,
+    DirectorsDetailView,
+    StudioDetailView,
 )
 from django.contrib.auth.views import LogoutView
 
@@ -59,6 +61,8 @@ urlpatterns = [
 
     path('anime/genres/', GenreListView.as_view(), name='genre_list'),
     path('anime/genres/<slug:slug>', GenreDetailView.as_view(), name='genre_detail'),
+    path('anime/directors/<slug:slug>', DirectorsDetailView.as_view(), name='directors_detail'),
+    path('anime/studio/<slug:slug>', StudioDetailView.as_view(), name='studio_detail'),
     path('comment/delete/<slug:slug>/<int:pk>', DeleteCommentView.as_view(), name='delete_comment'),
 
     path('search/', Search.as_view(), name='search'),

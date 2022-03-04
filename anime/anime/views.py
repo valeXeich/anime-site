@@ -1,15 +1,16 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, UpdateView
 from django.views.generic.list import MultipleObjectMixin
 from .forms import ProfileUpdateForm, RatingForm
-from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip, Rating, RatingStar, Video, Comment, Genre
+from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip, Rating, Video, Comment, Genre, Directors, Studio
 from .mixins import ProfileMixin, AnimeListMixin, CommentMixin
 from .filter import FilterList
+from .utils import get_random
 
 User = get_user_model()
 
@@ -32,6 +33,7 @@ class TrendingView(ProfileMixin, AnimeListMixin, ListView):
         context['profile'] = self.profile
         context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
         context['last_comment'] = comment_list[:4]
+        context['random_anime'] = get_random()
         return context
 
 
@@ -55,6 +57,7 @@ class PopularView(ProfileMixin, AnimeListMixin, ListView):
         context['profile'] = self.profile
         context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
         context['last_comment'] = comment_list[:4]
+        context['random_anime'] = get_random()
         return context
 
 
@@ -76,8 +79,8 @@ class RecentView(ProfileMixin, AnimeListMixin, ListView):
         context['profile'] = self.profile
         context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
         context['last_comment'] = comment_list[:4]
+        context['random_anime'] = get_random()
         return context
-
 
 
 def get_client_ip(request):
@@ -97,6 +100,7 @@ class AllAnimeView(ProfileMixin, AnimeListMixin, FilterList, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
+        context['random_anime'] = get_random()
         return context
 
 
@@ -126,6 +130,7 @@ class AnimeListView(ProfileMixin, AnimeListMixin, ListView):
         context['recent'] = Anime.objects.all().order_by('-year')[:6]
         context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
         context['last_comment'] = comment_list[:4]
+        context['random_anime'] = get_random()
         return context
 
 
@@ -140,6 +145,7 @@ class UpdateProfileView(ProfileMixin, AnimeListMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
+        context['random_anime'] = get_random()
         return context
 
 
@@ -167,6 +173,7 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
         context['comments'] = self.get_comments_for_anime()
         context['similar_anime'] = similar_anime
         context['star_form'] = RatingForm()
+        context['random_anime'] = get_random()
         context['cacl_rating'] = Rating.objects.filter(anime=anime).aggregate(Avg('star')).get('star__avg')
         try:
             anime_list = AnimeList.objects.get(owner=self.profile)
@@ -205,6 +212,7 @@ class DisplayVideo(ProfileMixin, AnimeListMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['video'] = Video.objects.filter(anime=anime)
         context['profile'] = self.profile
+        context['random_anime'] = get_random()
         return context
 
 
@@ -216,6 +224,7 @@ class ProfileView(ProfileMixin, AnimeListMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['watching'] = AnimeList.objects.get(owner=self.get_object())
+        context['random_anime'] = get_random()
         return context
 
 
@@ -396,6 +405,7 @@ class ProfileWillWatchView(ProfileMixin, AnimeListMixin, DetailView):
         context = super().get_context_data(**kwargs)
         user = kwargs.get('object').owner.user
         context['profile'] = Profile.objects.get(user=user)
+        context['random_anime'] = get_random()
         return context
 
 
@@ -409,6 +419,7 @@ class ProfileViewedView(ProfileMixin, AnimeListMixin, DetailView):
         context = super().get_context_data(**kwargs)
         user = kwargs.get('object').owner.user
         context['profile'] = Profile.objects.get(user=user)
+        context['random_anime'] = get_random()
         return context
 
 
@@ -422,6 +433,7 @@ class ProfileThrowView(ProfileMixin, AnimeListMixin, DetailView):
         context = super().get_context_data(**kwargs)
         user = kwargs.get('object').owner.user
         context['profile'] = Profile.objects.get(user=user)
+        context['random_anime'] = get_random()
         return context
 
 
@@ -435,6 +447,7 @@ class ProfileFavoriteView(ProfileMixin, AnimeListMixin, DetailView):
         context = super().get_context_data(**kwargs)
         user = kwargs.get('object').owner.user
         context['profile'] = Profile.objects.get(user=user)
+        context['random_anime'] = get_random()
         return context
 
 
@@ -477,6 +490,7 @@ class GenreListView(ProfileMixin, AnimeListMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
+        context['random_anime'] = get_random()
         return context
 
 class GenreDetailView(ProfileMixin, FilterList, AnimeListMixin, DetailView, MultipleObjectMixin):
@@ -490,32 +504,35 @@ class GenreDetailView(ProfileMixin, FilterList, AnimeListMixin, DetailView, Mult
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['profile'] = self.profile
         context['genre'] = self.get_object()
+        context['random_anime'] = get_random()
         return context
 
 
 class DirectorsDetailView(ProfileMixin, AnimeListMixin, DetailView, MultipleObjectMixin):
-    model = Genre
+    model = Directors
     paginate_by = 18
     slug_field = 'url'
     template_name = 'anime/directors_detail.html'
 
     def get_context_data(self, **kwargs):
-        object_list = Anime.objects.filter(genre=self.get_object())
+        object_list = Anime.objects.filter(directors=self.get_object())
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['profile'] = self.profile
+        context['random_anime'] = get_random()
         return context
 
 
 class StudioDetailView(ProfileMixin, AnimeListMixin, DetailView, MultipleObjectMixin):
-    model = Genre
+    model = Studio
     paginate_by = 18
     slug_field = 'url'
     template_name = 'anime/studio_detail.html'
 
     def get_context_data(self, **kwargs):
-        object_list = Anime.objects.filter(genre=self.get_object())
+        object_list = Anime.objects.filter(studio=self.get_object())
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['profile'] = self.profile
+        context['random_anime'] = get_random()
         return context
 
 
@@ -528,5 +545,6 @@ class Search(ProfileMixin, AnimeListMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['q'] = anime
         context['profile'] = self.profile
+        context['random_anime'] = get_random()
         return context
 

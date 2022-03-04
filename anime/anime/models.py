@@ -19,16 +19,24 @@ class Genre(models.Model):
 
 class Directors(models.Model):
     name = models.CharField('Режиссер', max_length=250)
+    url = models.SlugField(unique=True, null=True)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('anime:directors_detail', kwargs={'slug': self.url})
 
 
 class Studio(models.Model):
     name = models.CharField('Студия', max_length=250)
+    url = models.SlugField(unique=True, null=True)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('anime:studio_detail', kwargs={'slug': self.url})
 
 
 class Ip(models.Model):

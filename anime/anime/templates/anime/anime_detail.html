@@ -68,11 +68,11 @@
                                     <div class="col-lg-6 col-md-6">
                                         <ul>
                                             <li><span>Тип:</span> {{ anime_detail.get_type_display }}</li>
-                                            <li><span>Студия:</span> {{ anime_detail.studio }}</li>
+                                            <li><span>Студия:</span> <a href="{% url 'anime:studio_detail' slug=anime_detail.studio.url %}">{{ anime_detail.studio }}</a></li>
                                             <li><span>Дата выхода:</span> {{ anime_detail.year.year }}</li>
                                             <li><span>Статус:</span> {{ anime_detail.get_status_display }}</li>
                                             <li><span>Жанры:</span> {% for genre in anime_detail.genre.all %}<a href="{% url 'anime:genre_detail' slug=genre.url %}">{{ genre.name }} </a>{% endfor %}</li>
-                                            <li><span>Режиссеры:</span> {{ anime_detail.directors.all|join:", " }}</li>
+                                            <li><span>Режиссеры:</span> {% for director in anime_detail.directors.all %} <a href="{% url 'anime:directors_detail' slug=director.url  %}">{{ director.name }} </a>  {% endfor %}</li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-6 col-md-6">

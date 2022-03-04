@@ -12,8 +12,16 @@ class GenreAdmin(admin.ModelAdmin):
     prepopulated_fields = {'url': ('name',)}
 
 
-admin.site.register(Directors)
-admin.site.register(Studio)
+@admin.register(Directors)
+class DirectorsAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'url': ('name',)}
+
+
+@admin.register(Studio)
+class StudioAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'url': ('name',)}
+
+
 admin.site.register(Profile)
 admin.site.register(AnimeList)
 admin.site.register(WatchingNow)

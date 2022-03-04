@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.views import View
@@ -7,7 +9,6 @@ from .models import Profile, AnimeList, Comment, Anime
 from .forms import CommentForm
 
 User = get_user_model()
-
 
 class ProfileMixin(View):
 
