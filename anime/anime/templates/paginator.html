@@ -2,7 +2,7 @@
 <div class="product__pagination">
   {% for p in paginator.page_range %}
   {% if page_obj.number == p %}
-  <a href="?page={{ p }}" class="current-page">{{ p }}</a>
+  <a href="page={{ p }}" class="current-page">{{ p }}</a>
   {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
   <a href="?page={{ p }}">{{ p }}</a>
   {% endif %}

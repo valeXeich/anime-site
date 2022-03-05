@@ -10,7 +10,8 @@ from .forms import ProfileUpdateForm, RatingForm
 from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip, Rating, Video, Comment, Genre, Directors, Studio
 from .mixins import ProfileMixin, AnimeListMixin, CommentMixin
 from .filter import FilterList
-from .utils import get_random
+from .utils import get_random, get_comments
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -19,20 +20,14 @@ class TrendingView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
     queryset = Anime.objects.all().annotate(views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt', '-year')
     context_object_name = 'trending'
+    paginate_by = 18
     template_name = 'anime/trending.html'
 
     def get_context_data(self, **kwargs):
-        comments = Comment.objects.all().order_by('-created_date')
-        comment_list = []
-        for i in comments:
-            for j in comments:
-                if i.anime == j.anime:
-                    if i.anime not in comment_list:
-                        comment_list.append(i.anime)
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
         context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
-        context['last_comment'] = comment_list[:4]
+        context['last_comment'] = get_comments()[:4]
         context['random_anime'] = get_random()
         return context
 
@@ -43,20 +38,14 @@ class PopularView(ProfileMixin, AnimeListMixin, ListView):
                                                           comm_cnt=Count('anime_comments')).order_by('-views_cnt',
                                                                                                      '-comm_cnt')
     context_object_name = 'popular'
+    paginate_by = 18
     template_name = 'anime/popular.html'
 
     def get_context_data(self, **kwargs):
-        comments = Comment.objects.all().order_by('-created_date')
-        comment_list = []
-        for i in comments:
-            for j in comments:
-                if i.anime == j.anime:
-                    if i.anime not in comment_list:
-                        comment_list.append(i.anime)
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
         context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
-        context['last_comment'] = comment_list[:4]
+        context['last_comment'] = get_comments()[:4]
         context['random_anime'] = get_random()
         return context
 
@@ -65,20 +54,14 @@ class RecentView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
     queryset = Anime.objects.all().order_by('-year')
     context_object_name = 'recent'
+    paginate_by = 18
     template_name = 'anime/recent.html'
 
     def get_context_data(self, **kwargs):
-        comments = Comment.objects.all().order_by('-created_date')
-        comment_list = []
-        for i in comments:
-            for j in comments:
-                if i.anime == j.anime:
-                    if i.anime not in comment_list:
-                        comment_list.append(i.anime)
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
         context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
-        context['last_comment'] = comment_list[:4]
+        context['last_comment'] = get_comments()[:4]
         context['random_anime'] = get_random()
         return context
 
@@ -96,11 +79,13 @@ class AllAnimeView(ProfileMixin, AnimeListMixin, FilterList, ListView):
     model = Anime
     template_name = 'anime/anime_all.html'
     context_object_name = 'anime_all'
+    paginate_by = 18
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['profile'] = self.profile
         context['random_anime'] = get_random()
+        context['last_comment'] = get_comments()[:4]
         return context
 
 
@@ -111,13 +96,6 @@ class AnimeListView(ProfileMixin, AnimeListMixin, ListView):
     template_name = 'anime/anime_list.html'
 
     def get_context_data(self, *args, **kwargs):
-        comments = Comment.objects.all().order_by('-created_date')
-        comment_list = []
-        for i in comments:
-            for j in comments:
-                if i.anime == j.anime:
-                    if i.anime not in comment_list:
-                        comment_list.append(i.anime)
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
         context['popular'] = Anime.objects.all().annotate(views_cnt=Count('views'),
@@ -129,7 +107,7 @@ class AnimeListView(ProfileMixin, AnimeListMixin, ListView):
                                                                                                       '-year')[:6]
         context['recent'] = Anime.objects.all().order_by('-year')[:6]
         context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
-        context['last_comment'] = comment_list[:4]
+        context['last_comment'] = get_comments()[:4]
         context['random_anime'] = get_random()
         return context
 
@@ -174,6 +152,7 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
         context['similar_anime'] = similar_anime
         context['star_form'] = RatingForm()
         context['random_anime'] = get_random()
+        context['video'] = Video.objects.filter(anime=anime)
         context['cacl_rating'] = Rating.objects.filter(anime=anime).aggregate(Avg('star')).get('star__avg')
         try:
             anime_list = AnimeList.objects.get(owner=self.profile)
@@ -200,6 +179,20 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
         except AnimeList.DoesNotExist:
             None
         return context
+
+
+# class DisplayVideo(ProfileMixin, AnimeListMixin, DetailView):
+#     model = Anime
+#     template_name = 'anime/anime_video.html'
+#     slug_field = 'url'
+#
+#     def get_context_data(self, **kwargs):
+#         anime = kwargs.get('object')
+#         context = super().get_context_data(**kwargs)
+#         context['video'] = Video.objects.filter(anime=anime)
+#         context['profile'] = self.profile
+#         context['random_anime'] = get_random()
+#         return context
 
 
 class DisplayVideo(ProfileMixin, AnimeListMixin, DetailView):
@@ -504,6 +497,7 @@ class GenreDetailView(ProfileMixin, FilterList, AnimeListMixin, DetailView, Mult
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['profile'] = self.profile
         context['genre'] = self.get_object()
+        context['last_comment'] = get_comments()[:4]
         context['random_anime'] = get_random()
         return context
 
@@ -518,6 +512,8 @@ class DirectorsDetailView(ProfileMixin, AnimeListMixin, DetailView, MultipleObje
         object_list = Anime.objects.filter(directors=self.get_object())
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['profile'] = self.profile
+        context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
+        context['last_comment'] = get_comments()[:4]
         context['random_anime'] = get_random()
         return context
 
@@ -532,6 +528,8 @@ class StudioDetailView(ProfileMixin, AnimeListMixin, DetailView, MultipleObjectM
         object_list = Anime.objects.filter(studio=self.get_object())
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['profile'] = self.profile
+        context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
+        context['last_comment'] = get_comments()[:4]
         context['random_anime'] = get_random()
         return context
 
@@ -541,10 +539,13 @@ class Search(ProfileMixin, AnimeListMixin, ListView):
     template_name = 'search.html'
 
     def get_context_data(self, **kwargs):
-        anime = Anime.objects.filter(title__icontains=self.request.GET.get('q'))
+        anime = Anime.objects.filter(Q(title__icontains=self.request.GET.get('q'))|Q(second_title__icontains=self.request.GET.get('q')))
         context = super().get_context_data(**kwargs)
+        context['search_request'] = self.request.GET.get('q')
         context['q'] = anime
         context['profile'] = self.profile
         context['random_anime'] = get_random()
+        context['top_views'] = Anime.objects.all().annotate(views_cnt=Count('views')).order_by('-views_cnt')[:5]
+        context['last_comment'] = get_comments()[:4]
         return context
 

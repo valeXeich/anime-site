@@ -46,7 +46,7 @@ urlpatterns = [
     path('profile/<int:pk>', ProfileView.as_view(), name='profile_detail'),
     path('profile/<int:pk>/update', UpdateProfileView.as_view(), name='profile_update'),
     path('add-rating/', AddStarRating.as_view(), name='add_rating'),
-    path('anime/video/<slug:slug>', DisplayVideo.as_view(), name='anime_video'),
+    path('anime/video/<slug:slug><int:pk>', DisplayVideo.as_view(), name='anime_video'),
     # AnimeList
     path('profile/<int:pk>/will_watching', ProfileWillWatchView.as_view(), name='will_watching'),
     path('profile/<int:pk>/viewed', ProfileViewedView.as_view(), name='viewed'),

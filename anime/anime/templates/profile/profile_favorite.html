@@ -43,17 +43,17 @@
           <table class="table table table-hover mt-2" style="background-color: #070720; margin-bottom: 320px;">
       <thead>
     <tr>
-      <th scope="col" style="color: #fff;">Image</th>
-      <th scope="col" style="color: #fff;">Title</th>
-      <th scope="col" style="color: #fff;">Rating</th>
+      <th scope="col" style="color: #fff;">Постер</th>
+      <th scope="col" style="color: #fff;">Название</th>
+      <th scope="col" style="color: #fff;">Рейтинг</th>
     </tr>
   </thead>
   <tbody style="color: #fff;">
   {% for favorite in anime_favorite.favorite.all %}
     <tr>
-      <td><img src="{{ favorite.anime.poster.url }}" class="image"></td>
-      <td style="color: #fff;">{{ favorite.anime.title }}</td>
-      <td style="color: #fff;">{{ favorite.anime.avg_rating }}</td>
+      <td><a href="{% url 'anime:anime_detail' slug=favorite.anime.url %}"><img src="{{ favorite.anime.poster.url }}" class="image"></a></td>
+      <td style="color: #fff;" class="red-link"><a href="{% url 'anime:anime_detail' slug=favorite.anime.url %}">{{ favorite.anime.title }}</a></td>
+      <td style="color: #fff;">{% if favorite.anime.avg_rating %}{{ favorite.anime.avg_rating }}{% else %}Нету оценок{% endif %}</td>
     </tr>
   {% endfor %}
   </tbody>
@@ -70,6 +70,10 @@
 </div>
 
 <style>
+
+.red-link a:hover {
+        color: red;
+    }
 
 .image {
     width:120px

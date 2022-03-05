@@ -78,11 +78,11 @@
                                     <div class="col-lg-6 col-md-6">
                                         <ul>
                                             {% if cacl_rating %}
-                                            <li><span>Средний рейтинг:</span>{{ cacl_rating }}</li>
+                                            <li><span>Сред. рейтинг:</span>{{ cacl_rating }}</li>
                                             {% else %}
                                             <li><span>Рейтинг:</span>Нету оценок</li>
                                             {% endif %}
-                                            <li><span>Возрастной рейтинг:</span> {{ anime_detail.get_age_rating_display }}</li>
+                                            <li><span>Воз. рейтинг:</span> {{ anime_detail.get_age_rating_display }}</li>
                                             <li><span>Качество:</span> HD</li>
                                             <li><span>Просмотров:</span>{{ anime_detail.total_views }}</li>
                                         </ul>
@@ -90,7 +90,7 @@
                                 </div>
                             </div>
                             <div class="anime__details__btn">
-                                <a href="{% url 'anime:anime_video' slug=anime_detail.url %}" class="follow-btn"><i class="bi bi-collection-play"></i> WATCH</a>
+<!--                                <a href="" class="follow-btn"><i class="bi bi-collection-play"></i> WATCH</a>-->
                             </div>
                         </div>
                     </div>
@@ -114,6 +114,14 @@
         </div>
     </section>
             {% endif %}
+            <div class="anime__details__episodes">
+                <div class="section-title">
+                    <h5>List Name</h5>
+                </div>
+                {% for vid in video %}
+                <a href="#">{{ vid.name }}</a>
+                {% endfor %}
+            </div>
         <div class="row">
             <div class="col-lg-8 col-md-8">
                 <div class="anime__details__review">

@@ -11,12 +11,7 @@
                     <div class="row">
                         <div class="col-lg-8 col-md-8 col-sm-8">
                             <div class="section-title">
-                                <h4>Актуальные</h4>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-4">
-                            <div class="btn__all">
-                                <a href="#" class="primary-btn">Смотреть все<span class="bi bi-arrow-right"></span></a>
+                                <h4>Поиск: "{{ search_request }}" Найдено: {{ q.count }}</h4>
                             </div>
                         </div>
                     </div>
@@ -25,8 +20,8 @@
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" style="background-image: url({{ anime.poster.url }});">
-                                    <div class="ep">18 / 18</div>
-                                    <div class="comment"><i class="bi bi-chat"></i> {{ anime.number_of_comments }}</div>
+                                    <div class="ep">{{ anime.total_series }} / {{ anime.total_series }}</div>
+                                    <div class="comment"><i class="bi bi-chat"></i> {{ anime.total_comments }}</div>
                                     <div class="view"><i class="bi bi-eye"></i> {{ anime.total_views }}</div>
                                 </div>
                                 <div class="product__item__text">
@@ -34,7 +29,7 @@
                                         <li>{{ anime.get_type_display }}</li>
                                         <li>{{ anime.year.year }}</li>
                                     </ul>
-                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title|truncatechars:21 }}</a></h5>
+                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
                                 </div>
                             </div>
                         </div>
@@ -49,38 +44,36 @@
                         <div class="section-title">
                             <h5>ТОП ПРОСМОТРОВ</h5>
                         </div>
-                        <ul class="filter__controls">
-                            <li class="active" data-filter="*">День</li>
-                            <li data-filter=".week">Неделя</li>
-                            <li data-filter=".month">Месяць</li>
-                            <li data-filter=".years">Год</li>
-                        </ul>
                         <div class="filter__gallery">
-                            <div class="product__sidebar__view__item set-bg mix week years" v-for="anim in anime" style="background-image: url(https://cdn1.savepice.ru/uploads/2022/2/15/eb27312f6542810dc0465dcd8b36a3b5-full.jpg);">
-                                <div class="ep">18 / ?</div>
-                                <div class="view"><i class="bi bi-eye"></i> 9141</div>
-                                <h5><a href="#"></a></h5>
+                            {% for anim in top_views %}
+                            <div class="product__sidebar__view__item set-bg mix day years" style="background-image: url({{ anim.poster.url }});">
+                                <div class="ep">{{ anim.total_series }} / {{ anim.total_series }}</div>
+                                <div class="view"><i class="bi bi-eye"></i> {{ anim.total_views }}</div>
+                                <h5><a href="{{ anim.get_absolute_url }}">{{ anim.title }}</a></h5>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
 
                     <div class="product__sidebar__comment">
                         <div class="section-title">
-                            <h5>New Comment</h5>
+                            <h5>Новый комментарий</h5>
                         </div>
-                        <div class="product__sidebar__comment__item" v-for="anim in anime">
+                        {% for comment in last_comment %}
+                        <div class="product__sidebar__comment__item">
                             <div class="product__sidebar__comment__item__pic">
-                                <img src="img/sidebar/comment-1.jpg" alt="">
+                                <img src="{{ comment.poster.url }}" style="width: 90px;" alt="">
                             </div>
                             <div class="product__sidebar__comment__item__text">
                                 <ul>
-                                    <li></li>
-                                    <li></li>
+                                    <li>{{ comment.get_type_display }}</li>
+                                    <li>{{ comment.year.year }}</li>
                                 </ul>
-                                <h5><a href="#" ></a></h5>
-                                <span><i class="bi bi-eye"></i> 19.141 Viewes</span>
+                                <h5><a href="{{ comment.get_absolute_url }}" >{{ comment.title }}</a></h5>
+                                <span><i class="bi bi-eye"></i> {{ comment.total_views }} Просмотров</span>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

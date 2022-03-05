@@ -1,6 +1,7 @@
 from django.views.generic import ListView
 from .models import Anime, Genre, Directors, Studio
 from .mixins import ProfileMixin
+from .utils import get_random, get_comments
 
 
 class FilterList:
@@ -65,6 +66,8 @@ class FilterForAnime(ProfileMixin, FilterList, ListView):
         context = super().get_context_data(*args, **kwargs)
         context['anime_filter'] = self.get_queryset()
         context['profile'] = self.profile
+        context['random_anime'] = get_random()
+        context['last_comment'] = get_comments()[:4]
         return context
 
 
@@ -103,6 +106,8 @@ class FilterForGenre(ProfileMixin, FilterList, ListView):
         context['anime_filter'] = self.get_queryset()
         context['profile'] = self.profile
         context['genre'] = genre
+        context['random_anime'] = get_random()
+        context['last_comment'] = get_comments()[:4]
         return context
 
 
