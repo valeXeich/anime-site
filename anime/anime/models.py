@@ -228,9 +228,13 @@ class Video(models.Model):
     video = models.FileField(upload_to='video/')
     thumb = models.FileField(upload_to='thumb/')
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE, related_name='related_series')
+    url = models.SlugField(unique=True, null=True)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('anime:anime_video', kwargs={'series': self.anime.url, 'slug': self.url})
 
 
 class AnimeShot(models.Model):

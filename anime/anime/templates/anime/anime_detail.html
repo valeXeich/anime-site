@@ -66,7 +66,7 @@
                             <div class="anime__details__widget">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
-                                        <ul>
+                                        <ul class="red-link">
                                             <li><span>Тип:</span> {{ anime_detail.get_type_display }}</li>
                                             <li><span>Студия:</span> <a href="{% url 'anime:studio_detail' slug=anime_detail.studio.url %}">{{ anime_detail.studio }}</a></li>
                                             <li><span>Дата выхода:</span> {{ anime_detail.year.year }}</li>
@@ -114,14 +114,16 @@
         </div>
     </section>
             {% endif %}
+            {% if video %}
             <div class="anime__details__episodes">
                 <div class="section-title">
-                    <h5>List Name</h5>
+                    <h5>Все серии</h5>
                 </div>
                 {% for vid in video %}
-                <a href="#">{{ vid.name }}</a>
+                <a href="{{ vid.get_absolute_url }}">{{ vid.name }}</a>
                 {% endfor %}
             </div>
+            {% endif %}
         <div class="row">
             <div class="col-lg-8 col-md-8">
                 <div class="anime__details__review">
@@ -150,14 +152,21 @@
                     {% endfor %}
                 </div>
                 <div class="anime__details__form">
+                    {% if user.is_authenticated %}
                     <div class="section-title">
                         <h5>Оставить отзыв</h5>
                     </div>
+
                     <form method="POST">
                         {% csrf_token %}
                         {{ form.text }}
                         <button type="submit"><i class="bi bi-send"></i>Отправить</button>
                     </form>
+                    {% else %}
+
+                        <h5 class="red-link" style="color: #fff;">Для добавление отзыва нужно <a href="{% url 'account_login' %}">авторизоваться</a></h5>
+
+                    {% endif %}
                 </div>
             </div>
             <div class="col-lg-4 col-md-4">
@@ -178,6 +187,10 @@
         </div>
     </section>
 <style>
+
+.red-link a:hover {
+        color: red;
+    }
 
 .favorite {
     margin-left: 10px;

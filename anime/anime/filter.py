@@ -36,7 +36,7 @@ class FilterForAnime(ProfileMixin, FilterList, ListView):
     template_name = 'filter.html'
 
     def get_queryset(self):
-        queryset = Anime.objects.all()
+        queryset = Anime.objects.all().prefetch_related('anime_comments', 'views')
         if 'genre' in self.request.GET:
             queryset = queryset.filter(genre__in=self.request.GET.getlist('genre'))
 
@@ -76,7 +76,7 @@ class FilterForGenre(ProfileMixin, FilterList, ListView):
     template_name = 'genre_filter.html'
 
     def get_queryset(self):
-        queryset = Anime.objects.filter(genre__id=self.request.GET.get('get_genre'))
+        queryset = Anime.objects.prefetch_related('anime_comments', 'views').filter(genre__id=self.request.GET.get('get_genre'))
 
         if 'directors' in self.request.GET:
             queryset = queryset.filter(directors__in=self.request.GET.getlist('directors'))

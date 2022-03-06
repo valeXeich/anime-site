@@ -22,6 +22,11 @@ class StudioAdmin(admin.ModelAdmin):
     prepopulated_fields = {'url': ('name',)}
 
 
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'url': ('name',)}
+
+
 admin.site.register(Profile)
 admin.site.register(AnimeList)
 admin.site.register(WatchingNow)
@@ -33,5 +38,4 @@ admin.site.register(Comment)
 admin.site.register(Ip)
 admin.site.register(RatingStar)
 admin.site.register(Rating)
-admin.site.register(Video)
 admin.site.register(AnimeShot)

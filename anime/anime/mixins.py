@@ -63,4 +63,4 @@ class CommentMixin(FormMixin):
         return super().form_valid(form)
 
     def get_comments_for_anime(self):
-        return Comment.objects.filter(anime=self.get_object())
+        return Comment.objects.filter(anime=self.get_object()).select_related('author')

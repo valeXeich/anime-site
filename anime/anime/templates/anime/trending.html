@@ -30,7 +30,7 @@
                                             <li>{{ anime.get_type_display }}</li>
                                             <li>{{ anime.year.year }}</li>
                                         </ul>
-                                        <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title|truncatechars:21 }}</a></h5>
+                                        <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
                                     </div>
                                 </div>
                             </div>
@@ -47,14 +47,8 @@
                     <div class="product__sidebar">
                         <div class="product__sidebar__view">
                             <div class="section-title">
-                                <h5>Top Views</h5>
+                                <h5>Топ просмотров</h5>
                             </div>
-                            <ul class="filter__controls">
-                                <li class="active" data-filter="*">Day</li>
-                                <li data-filter=".week">Week</li>
-                                <li data-filter=".month">Month</li>
-                                <li data-filter=".years">Years</li>
-                            </ul>
                             <div class="filter__gallery">
                                 {% for anim in top_views %}
                             <div class="product__sidebar__view__item set-bg mix day years" style="background-image: url({{ anim.poster.url }});">

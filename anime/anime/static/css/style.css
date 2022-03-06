@@ -1177,6 +1177,18 @@ ol {
 	border-radius: 2px;
 }
 
+.anime__details__form button {
+	font-size: 11px;
+	color: #ffffff;
+	font-weight: 700;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	background: #e53637;
+	border: none;
+	padding: 10px 15px;
+	border-radius: 2px;
+}
+
 /*---------------------
   Anime Watching
 -----------------------*/
