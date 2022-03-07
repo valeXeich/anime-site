@@ -136,13 +136,13 @@
                     <div class="anime__review__item">
                         <div class="anime__review__item__pic">
                             {% if comment.author.profile.avatar %}
-                            <img src="{{ comment.author.profile.avatar.url }}" alt="avatar">
+                            <a href="{% url 'anime:profile_detail' pk=comment.author.profile.pk %}"><img src="{{ comment.author.profile.avatar.url }}" alt="avatar"></a>
                             {% else %}
-                            <img src="https://i.pinimg.com/736x/57/3f/22/573f22a1aa17b366f5489745dc4704e1.jpg" alt="avatar">
+                            <a href="{% url 'anime:profile_detail' pk=comment.author.profile.pk %}"><img src="https://i.pinimg.com/736x/57/3f/22/573f22a1aa17b366f5489745dc4704e1.jpg" alt="avatar"></a>
                             {% endif %}
                         </div>
                         <div class="anime__review__item__text">
-                            <h6>{{ comment.author }} -<span> {{ comment.created_date }}</span></h6>
+                            <h6 class="prof-link"><a href="{% url 'anime:profile_detail' pk=comment.author.profile.pk %}">{{ comment.author }}</a> -<span> {{ comment.created_date }}</span></h6>
                             <p>{{ comment.text }}</p>
                             {% if comment.author.pk == request.user.pk %}
                             <a href="{% url 'anime:delete_comment' slug=anime_detail.url pk=comment.pk %}"><button class="btn btn-outline-danger" type="submit">Удалить</button></a>
@@ -187,6 +187,10 @@
         </div>
     </section>
 <style>
+
+.prof-link a:hover {
+    color: #fff;
+}
 
 .red-link a:hover {
         color: red;

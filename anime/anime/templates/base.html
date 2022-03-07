@@ -35,7 +35,9 @@
                                 <li><a href="{% url 'anime:anime_list' %}">Главная</a></li>
                                 <li><a href="{% url 'anime:genre_list' %}">Жанры <span class="arrow_carrot-down"></span></a></li>
                                 <li ><a href="{% url 'anime:anime_all' %}">Все аниме</a></li>
+                                {% if user.is_authenticated %}
                                 <li ><a href="{% url 'anime:anime_detail' slug=random_anime.url %}">Случайное аниме</a></li>
+                                {% endif %}
                             </ul>
                         </nav>
                     </div>
@@ -75,7 +77,9 @@
                         <li><a href="{% url 'anime:anime_list' %}">Главная</a></li>
                         <li><a href="{% url 'anime:genre_list' %}">Жанры</a></li>
                         <li><a href="{% url 'anime:anime_all' %}">Все аниме</a></li>
+                        {% if user.is_authenticated %}
                         <li><a href="{% url 'anime:anime_detail' slug=random_anime.url %}">Случайное аниме</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

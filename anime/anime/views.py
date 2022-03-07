@@ -14,6 +14,7 @@ from .filter import FilterList
 from .utils import get_random, get_comments, top_views
 from django.db.models import Q
 
+
 User = get_user_model()
 
 
