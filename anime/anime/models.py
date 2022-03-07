@@ -203,7 +203,6 @@ class Comment(models.Model):
         return reverse('anime:delete_comment', kwargs={'pk': self.pk})
 
 
-
 class RatingStar(models.Model):
     value = models.SmallIntegerField('Значение', default=0)
 

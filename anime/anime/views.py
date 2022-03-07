@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count
 from django.http import HttpResponse
@@ -8,11 +7,26 @@ from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView
 from django.views.generic.list import MultipleObjectMixin
 from .forms import ProfileUpdateForm, RatingForm
-from .models import Anime, Profile, AnimeList, WatchingNow, WillWatch, Viewed, Throw, Favorite, Ip, Rating, Video, Comment, Genre, Directors, Studio
+from django.db.models import Q
+
+from .models import (Anime,
+                     Profile,
+                     AnimeList,
+                     WatchingNow,
+                     WillWatch, Viewed,
+                     Throw,
+                     Favorite,
+                     Ip,
+                     Rating,
+                     Video,
+                     Comment,
+                     Genre,
+                     Directors,
+                     Studio
+                     )
 from .mixins import ProfileMixin, AnimeListMixin, CommentMixin
 from .filter import FilterList
 from .utils import get_random, get_comments, top_views
-from django.db.models import Q
 
 
 User = get_user_model()
@@ -20,7 +34,8 @@ User = get_user_model()
 
 class TrendingView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
-    queryset = Anime.objects.all().prefetch_related('anime_comments', 'views').annotate(views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt', '-year')
+    queryset = Anime.objects.all().prefetch_related('anime_comments', 'views').annotate(
+        views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt', '-year')
     context_object_name = 'trending'
     paginate_by = 18
     template_name = 'anime/trending.html'
@@ -36,9 +51,8 @@ class TrendingView(ProfileMixin, AnimeListMixin, ListView):
 
 class PopularView(ProfileMixin, AnimeListMixin, ListView):
     model = Anime
-    queryset = Anime.objects.all().prefetch_related('anime_comments', 'views').annotate(views_cnt=Count('views'),
-                                                          comm_cnt=Count('anime_comments')).order_by('-views_cnt',
-                                                                                                     '-comm_cnt')
+    queryset = Anime.objects.all().prefetch_related('anime_comments', 'views').annotate(
+        views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt')
     context_object_name = 'popular'
     paginate_by = 18
     template_name = 'anime/popular.html'
@@ -99,13 +113,10 @@ class AnimeListView(ProfileMixin, AnimeListMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
-        context['popular'] = Anime.objects.all().prefetch_related('anime_comments', 'views').annotate(views_cnt=Count('views'),
-                                                          comm_cnt=Count('anime_comments')).order_by('-views_cnt',
-                                                                                                     '-comm_cnt')[:6]
-        context['trending'] = Anime.objects.all().prefetch_related('anime_comments', 'views').annotate(views_cnt=Count('views'),
-                                                           comm_cnt=Count('anime_comments')).order_by('-views_cnt',
-                                                                                                      '-comm_cnt',
-                                                                                                      '-year')[:6]
+        context['popular'] = Anime.objects.all().prefetch_related('anime_comments', 'views').annotate(
+            views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt')[:6]
+        context['trending'] = Anime.objects.all().prefetch_related('anime_comments', 'views').annotate(
+            views_cnt=Count('views'), comm_cnt=Count('anime_comments')).order_by('-views_cnt', '-comm_cnt', '-year')[:6]
         context['recent'] = Anime.objects.all().prefetch_related('anime_comments', 'views').order_by('-year')[:6]
         context['top_views'] = top_views()[:5]
         context['last_comment'] = get_comments()[:4]
@@ -146,7 +157,8 @@ class AnimeDetailView(ProfileMixin, AnimeListMixin, CommentMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         anime = kwargs.get('object')
         genre = anime.genre.all()
-        similar_anime = Anime.objects.filter(genre__in=genre).exclude(id=anime.id).distinct().prefetch_related('views')[:4]
+        similar_anime = Anime.objects.filter(genre__in=genre).exclude(
+            id=anime.id).distinct().prefetch_related('views')[:4]
         context = super().get_context_data(*args, **kwargs)
         context['profile'] = self.profile
         context['comments'] = self.get_comments_for_anime()
@@ -526,7 +538,8 @@ class Search(ProfileMixin, AnimeListMixin, ListView):
     template_name = 'search.html'
 
     def get_context_data(self, **kwargs):
-        anime = Anime.objects.prefetch_related('anime_comments', 'views').filter(Q(title__icontains=self.request.GET.get('q'))|Q(second_title__icontains=self.request.GET.get('q')))
+        anime = Anime.objects.prefetch_related('anime_comments', 'views').filter(
+            Q(title__icontains=self.request.GET.get('q')) | Q(second_title__icontains=self.request.GET.get('q')))
         context = super().get_context_data(**kwargs)
         context['search_request'] = self.request.GET.get('q')
         context['q'] = anime

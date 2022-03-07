@@ -1,9 +1,6 @@
-from django.contrib.auth import get_user_model
 from django.forms import ModelForm, TextInput, Select, FileInput, Textarea, ModelChoiceField, RadioSelect
 from .models import Profile, Rating, RatingStar, Comment
 
-
-User = get_user_model()
 
 class ProfileUpdateForm(ModelForm):
     class Meta:
