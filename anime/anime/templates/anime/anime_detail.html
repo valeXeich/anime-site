@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Anime Section Begin -->
+    <!-- Anime Section Begin -->
     <section class="anime-details spad">
         <div class="container">
             <div class="anime__details__content">
@@ -9,40 +9,26 @@
                     <div class="col-lg-3">
                         <div class="anime__details__pic set-bg" style="background-image: url({{ anime_detail.poster.url }});">
                             {% if user.is_authenticated %}
-                            {% if favorite %}
-                            <div class="favorite"><a href="{% url 'anime:add_to_favorite' slug=anime_detail.url %}"><button class="btn btn-danger"><i class="bi bi-heart"></i></button></a></div>
-                            {% else %}
-                            <div class="favorite"><a href="{% url 'anime:add_to_favorite' slug=anime_detail.url %}"><button class="btn btn-outline-danger"><i class="bi bi-heart"></i></button></a></div>
+                                {% if anime_detail.favorite.all %}
+                                    <form action="{% url 'anime:add_to_favorite' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="favorite"><button class="btn btn-danger"><i class="bi bi-heart"></i></button></div>
+                                        <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+                                    </form>
+                                {% else %}
+                                    <form action="{% url 'anime:add_to_favorite' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="favorite"><button class="btn btn-outline-danger"><i class="bi bi-heart"></i></button></div>
+                                        <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+                                    </form>
+                                {% endif %}
                             {% endif %}
-                            {% endif %}
-                            <div class="comment"><i class="bi bi-chat"></i> {{ anime_detail.total_comments }}</div>
-                            <div class="view"><i class="bi bi-eye"></i> {{ anime_detail.total_views }}</div>
+                            <div class="comment"><i class="bi bi-chat"></i> {{ anime_detail.comments.count }}</div>
+                            <div class="view"><i class="bi bi-eye"></i> {{ anime_detail.views.count }}</div>
                         </div>
+
                         {% if user.is_authenticated %}
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            {% if watching_now %}
-                            <a href="{% url 'anime:add_to_watching' slug=anime_detail.url %}"><button class="btn btn-danger btn-sm" style="width: 95.5px;">Смотрю</button></a>
-                            {% else %}
-                        <a href="{% url 'anime:add_to_watching' slug=anime_detail.url %}"><button class="btn btn-dark btn-sm" style="width: 95.5px;">Смотрю</button></a>
-                            {% endif %}
-                            {% if will_watch %}
-                        <a href="{% url 'anime:add_to_will_watching' slug=anime_detail.url %}"><button class="btn btn-danger btn-sm" style="width: 115px;">Буду смотреть</button></a>
-                            {% else %}
-                        <a href="{% url 'anime:add_to_will_watching' slug=anime_detail.url %}"><button class="btn btn-dark btn-sm" style="width: 115px;">Буду смотреть</button></a>
-                            {% endif %}
-                            {% if throw %}
-                        <a href="{% url 'anime:add_to_throw' slug=anime_detail.url %}"><button class="btn btn-danger btn-sm" style="width: 95.5px;">Брошено</button></a>
-                            {% else %}
-                        <a href="{% url 'anime:add_to_throw' slug=anime_detail.url %}"><button class="btn btn-dark btn-sm" style="width: 95.5px;">Брошено</button></a>
-                            {% endif %}
-                        </div>
-                        <div class="d-grid gap-2">
-                            {% if viewed %}
-                        <a href="{% url 'anime:add_to_viewed' slug=anime_detail.url %}"><button class="btn btn-danger" style="width: 305px;">Просмотрено</button></a>
-                            {% else %}
-                        <a href="{% url 'anime:add_to_viewed' slug=anime_detail.url %}"><button class="btn btn-dark" style="width: 305px;">Просмотрено</button></a>
-                            {% endif %}
-                            </div>
+                            {% include 'buttons.html' %}
                         {% endif %}
                     </div>
 
@@ -52,16 +38,18 @@
                                 <h3>{{ anime_detail.title }}</h3>
                                 <span>{{ anime_detail.second_title }}</span>
                             </div>
-                                    <form action="{% url 'anime:add_rating' %}" method="post" name="rating">
-                                        {% csrf_token %}
-                                        <input type="hidden" value="{{ anime_detail.id }}" name="anime">
-                                        <span class="rating">
+                            {% if user.is_authenticated %}
+                            <form action="{% url 'anime:add_rating' %}" method="post" name="rating">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ anime_detail.id }}" name="anime">
+                                <span class="rating">
                                         {% for k, v in star_form.fields.star.choices %}
                                             <input id="rating{{ v }}" type="radio" name="star" value="{{ k }}">
-                                        <label for="rating{{ v }}">{{ k }}</label>
+                                            <label for="rating{{ v }}">{{ k }}</label>
                                         {% endfor %}
-                                     </span>
-                                    </form>
+                                </span>
+                            </form>
+                            {% endif %}
                             <p class="mt-2">{{ anime_detail.description }}</p>
                             <div class="anime__details__widget">
                                 <div class="row">
@@ -77,183 +65,109 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         <ul>
-                                            {% if cacl_rating %}
-                                            <li><span>Сред. рейтинг:</span>{{ cacl_rating }}</li>
+                                            {% if anime_detail.avg_rating %}
+                                                <li><span>Сред. рейтинг:</span>{{ anime_detail.avg_rating }}</li>
                                             {% else %}
-                                            <li><span>Рейтинг:</span>Нету оценок</li>
+                                                <li><span>Рейтинг:</span>Нету оценок</li>
                                             {% endif %}
                                             <li><span>Воз. рейтинг:</span> {{ anime_detail.get_age_rating_display }}</li>
                                             <li><span>Качество:</span> HD</li>
-                                            <li><span>Просмотров:</span>{{ anime_detail.total_views }}</li>
+                                            <li><span>Просмотров:</span>{{ anime_detail.views.count }}</li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="anime__details__btn">
-<!--                                <a href="" class="follow-btn"><i class="bi bi-collection-play"></i> WATCH</a>-->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {% if anime_detail.animeshot_set.all %}
-        <section class="anime-details spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="anime__details__episodes">
-                        <div class="section-title">
-                            <h5>Кадры</h5>
+            {% if anime_detail.anime_shots.all %}
+                <section class="anime-details spad">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="anime__details__episodes">
+                                    <div class="section-title">
+                                        <h5>Кадры</h5>
+                                    </div>
+                                    {% for image in anime_detail.anime_shots.all %}
+                                        <img class="anime-shot" src="{{ image.shot.url }}">
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
-                        {% for image in anime_detail.animeshot_set.all %}
-                            <img src="{{ image.shot.url }}" style="width: 310px;">
+                    </div>
+                </section>
+            {% endif %}
+            {% if anime_detail.related_series.all %}
+                <div class="anime__details__episodes">
+                    <div class="section-title">
+                        <h5>Все серии</h5>
+                    </div>
+                    {% for vid in anime_detail.related_series.all %}
+                        <a href="{{ vid.get_absolute_url }}">{{ vid.name }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    <div class="anime__details__form">
+                        {% if user.is_authenticated %}
+                            <div class="section-title">
+                                <h5>Оставить отзыв</h5>
+                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{ form.text }}
+                                <button type="submit"><i class="bi bi-send"></i>Отправить</button>
+                            </form>
+                        {% else %}
+                            <h5 class="red-link text-white">Для добавление отзыва нужно <a href="{% url 'account_login' %}">авторизоваться</a></h5>
+                        {% endif %}
+                    </div>
+                    <div class="anime__details__review mt-5">
+                        <div class="section-title">
+                            <h5>Отзывы</h5>
+                        </div>
+                        {% for comment in anime_detail.get_anime_comments %}
+                            <div class="anime__review__item">
+                                <div class="anime__review__item__pic">
+                                    <a href="{% url 'anime:profile_detail' pk=comment.author.profile.pk %}"><img src="{{ comment.author.profile.avatar.url }}" alt="avatar"></a>
+                                </div>
+                                <div class="anime__review__item__text">
+                                    <h6 class="prof-link"><a href="{% url 'anime:profile_detail' pk=comment.author.profile.pk %}">{{ comment.author }}</a> -<span> {{ comment.created_date }}</span></h6>
+                                    <p>{{ comment.text }}</p>
+                                    {% if comment.author.pk == request.user.pk %}
+                                        <form action="{% url 'anime:delete_comment' %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-danger" type="submit">Удалить</button>
+                                            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+                                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="anime__details__sidebar">
+                        <div class="section-title">
+                            <h5>Похожие</h5>
+                        </div>
+                        {% for similar in similar_anime %}
+                            <div class="product__sidebar__view__item set-bg" style="background-image: url({{ similar.poster.url }});">
+                                <div class="ep">{{ similar.total_series }} / {{ similar.total_series }}</div>
+                                <div class="view"><i class="bi bi-eye"></i> {{ similar.views.count }}</div>
+                                <h5><a href="{{ similar.get_absolute_url }}">{{ similar.title }}</a></h5>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </section>
-            {% endif %}
-            {% if video %}
-            <div class="anime__details__episodes">
-                <div class="section-title">
-                    <h5>Все серии</h5>
-                </div>
-                {% for vid in video %}
-                <a href="{{ vid.get_absolute_url }}">{{ vid.name }}</a>
-                {% endfor %}
-            </div>
-            {% endif %}
-        <div class="row">
-            <div class="col-lg-8 col-md-8">
-                <div class="anime__details__review">
-                    {% if comments %}
-                    <div class="section-title">
-                        <h5>Отзывы</h5>
-                    </div>
-                    {% endif %}
-                    {% for comment in comments %}
-                    <div class="anime__review__item">
-                        <div class="anime__review__item__pic">
-                            {% if comment.author.profile.avatar %}
-                            <a href="{% url 'anime:profile_detail' pk=comment.author.profile.pk %}"><img src="{{ comment.author.profile.avatar.url }}" alt="avatar"></a>
-                            {% else %}
-                            <a href="{% url 'anime:profile_detail' pk=comment.author.profile.pk %}"><img src="https://i.pinimg.com/736x/57/3f/22/573f22a1aa17b366f5489745dc4704e1.jpg" alt="avatar"></a>
-                            {% endif %}
-                        </div>
-                        <div class="anime__review__item__text">
-                            <h6 class="prof-link"><a href="{% url 'anime:profile_detail' pk=comment.author.profile.pk %}">{{ comment.author }}</a> -<span> {{ comment.created_date }}</span></h6>
-                            <p>{{ comment.text }}</p>
-                            {% if comment.author.pk == request.user.pk %}
-                            <a href="{% url 'anime:delete_comment' slug=anime_detail.url pk=comment.pk %}"><button class="btn btn-outline-danger" type="submit">Удалить</button></a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="anime__details__form">
-                    {% if user.is_authenticated %}
-                    <div class="section-title">
-                        <h5>Оставить отзыв</h5>
-                    </div>
-
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form.text }}
-                        <button type="submit"><i class="bi bi-send"></i>Отправить</button>
-                    </form>
-                    {% else %}
-
-                        <h5 class="red-link" style="color: #fff;">Для добавление отзыва нужно <a href="{% url 'account_login' %}">авторизоваться</a></h5>
-
-                    {% endif %}
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4">
-                        <div class="anime__details__sidebar">
-                            <div class="section-title">
-                                <h5>Похожие</h5>
-                            </div>
-                            {% for similar in similar_anime %}
-                            <div class="product__sidebar__view__item set-bg" style="background-image: url({{ similar.poster.url }});">
-                                <div class="ep">{{ similar.total_series }} / {{ similar.total_series }}</div>
-                                <div class="view"><i class="bi bi-eye"></i> {{ similar.total_views }}</div>
-                                <h5><a href="#">{{ similar.title }}</a></h5>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-        </div>
-        </div>
-    </section>
-<style>
-
-.prof-link a:hover {
-    color: #fff;
-}
-
-.red-link a:hover {
-        color: red;
-    }
-
-.favorite {
-    margin-left: 10px;
-    padding-top: 10px;
-}
-.favorite button {
-    opacity: 1;
-}
-
-/* Checkbox stars */
-.rating {
-  overflow: hidden;
-  vertical-align: bottom;
-  display: inline-block;
-  width: 155px;
-  height: 30px;
-}
-
-.rating > input {
-  opacity: 0;
-  margin-right: -100%;
-}
-
-.rating > label {
-  position: relative;
-  display: block;
-  float: right;
-  background: url('/static/img/star-off-big.png');
-  background-size: 30px 30px;
-}
-
-.rating > label:before {
-  display: block;
-  opacity: 0;
-  content: '';
-  width: 30px;
-  height: 30px;
-  background: url('/static/img/star-on-big.png');
-  background-size: 30px 30px;
-  transition: opacity 0.2s linear;
-}
-
-.rating > label:hover:before,  .rating > label:hover ~ label:before,  .rating:not(:hover) > :checked ~ label:before { opacity: 1; }
-/* //Checkbox stars */
-
-</style>
-<script>
-    // Add star rating
-const rating = document.querySelector('form[name=rating]');
-
-rating.addEventListener("change", function (e) {
-    // Получаем данные из формы
-    let data = new FormData(this);
-    fetch(`${this.action}`, {
-        method: 'POST',
-        body: data
-    })
-        .then(response => alert("Рейтинг установлен"))
-        .catch(error => alert("Ошибка"))
-});
-</script>
+    <script src='/static/js/rating.js'></script>
 {% endblock content %}

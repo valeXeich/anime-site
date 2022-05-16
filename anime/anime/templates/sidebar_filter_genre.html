@@ -5,10 +5,10 @@
         <h6 class="card-header">Режиссеры</h6>
         <div class="list-group list-group-flush">
             {% for anime in view.get_directors %}
-            <li class="list-group-item">
-                <input class="form-check-input" data-filter="color" name="directors" value="{{ anime.id }}" type="checkbox" />&nbsp;
-                <span class="span-color">{{ anime.name }}</span>
-            </li>
+                <li class="list-group-item">
+                    <input class="form-check-input" data-filter="color" name="directors" value="{{ anime.id }}" type="checkbox" />&nbsp;
+                    <span class="span-color">{{ anime.name }}</span>
+                </li>
             {% endfor %}
         </div>
     </div>
@@ -18,10 +18,10 @@
         <h6 class="card-header">Студия</h6>
         <div class="list-group list-group-flush">
             {% for anime in view.get_studio %}
-            <li class="list-group-item">
-                <input class="form-check-input" data-filter="color" name="studio" value="{{ anime.id }}" type="checkbox" />&nbsp;
-                <span class="span-color">{{ anime.name }}</span>
-            </li>
+                <li class="list-group-item">
+                    <input class="form-check-input" data-filter="color" name="studio" value="{{ anime.id }}" type="checkbox" />&nbsp;
+                    <span class="span-color">{{ anime.name }}</span>
+                </li>
             {% endfor %}
         </div>
     </div>
@@ -31,10 +31,10 @@
         <h6 class="card-header">Год</h6>
         <div class="list-group list-group-flush">
             {% for anime in view.get_year.values %}
-            <li class="list-group-item">
-                <input class="form-check-input" data-filter="color" name="year" value="{{ anime.year.year }}" type="checkbox" />&nbsp;
-                <span class="span-color">{{ anime.year.year }}</span>
-            </li>
+                <li class="list-group-item">
+                    <input class="form-check-input" data-filter="color" name="year" value="{{ anime.year.year }}" type="checkbox" />&nbsp;
+                    <span class="span-color">{{ anime.year.year }}</span>
+                </li>
             {% endfor %}
         </div>
     </div>
@@ -44,10 +44,10 @@
         <h6 class="card-header">Статус</h6>
         <div class="list-group list-group-flush">
             {% for anime in view.get_status %}
-            <li class="list-group-item">
-                <input class="form-check-input" data-filter="color" name="status" value="{{ anime.status }}" type="checkbox" />&nbsp;
-                <span class="span-color">{{ anime.get_status_display }}</span>
-            </li>
+                <li class="list-group-item">
+                    <input class="form-check-input" data-filter="color" name="status" value="{{ anime.status }}" type="checkbox" />&nbsp;
+                    <span class="span-color">{{ anime.get_status_display }}</span>
+                </li>
             {% endfor %}
         </div>
     </div>
@@ -57,10 +57,10 @@
         <h6 class="card-header">Рейтинг</h6>
         <div class="list-group list-group-flush">
             {% for anime in view.get_age_rating %}
-            <li class="list-group-item">
-                <input class="form-check-input" data-filter="color" name="age_rating" value="{{ anime.age_rating }}" type="checkbox" />&nbsp;
-                <span class="span-color">{{ anime.get_age_rating_display }}</span>
-            </li>
+                <li class="list-group-item">
+                    <input class="form-check-input" data-filter="color" name="age_rating" value="{{ anime.age_rating }}" type="checkbox" />&nbsp;
+                    <span class="span-color">{{ anime.get_age_rating_display }}</span>
+                </li>
             {% endfor %}
         </div>
     </div>
@@ -70,10 +70,10 @@
         <h6 class="card-header">Сезон</h6>
         <div class="list-group list-group-flush">
             {% for anime in view.get_season %}
-            <li class="list-group-item">
-                <input class="form-check-input" data-filter="color" name="season" value="{{ anime.season }}" type="checkbox" />&nbsp;
-                <span class="span-color">{{ anime.get_season_display }}</span>
-            </li>
+                <li class="list-group-item">
+                    <input class="form-check-input" data-filter="color" name="season" value="{{ anime.season }}" type="checkbox" />&nbsp;
+                    <span class="span-color">{{ anime.get_season_display }}</span>
+                </li>
             {% endfor %}
         </div>
     </div>
@@ -82,32 +82,13 @@
         <h6 class="card-header">Тип</h6>
         <div class="list-group list-group-flush">
             {% for anime in view.get_type %}
-            <li class="list-group-item">
-                <input class="form-check-input" data-filter="color" name="type" value="{{ anime.type }}" type="checkbox" />&nbsp;
-                <span class="span-color">{{ anime.get_type_display }}</span>
-            </li>
+                <li class="list-group-item">
+                    <input class="form-check-input" data-filter="color" name="type" value="{{ anime.type }}" type="checkbox" />&nbsp;
+                    <span class="span-color">{{ anime.get_type_display }}</span>
+                </li>
             {% endfor %}
         </div>
     </div>
     <input type="hidden" name="get_genre" value=" {{ genre.pk }} ">
     <button type="submit" class="btn btn-outline-danger">Найти</button>
 </form>
-
-<style>
-
-    .card {
-        background-color: #070720;
-    }
-    .card-header {
-        color: #fff;
-    }
-
-    .list-group-item {
-        background-color: #070720;
-    }
-
-    .span-color {
-        color: #fff;
-    }
-
-</style>

@@ -1,26 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if request.user.pk == profile.user.pk %}
-<div class="container rounded mycolor mt-5">
-    <div class="row" style="margin-bottom: 350px">
-        <div class="col-md-4 border-right">
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5">{% if profile.avatar %}<img class="rounded-circle " src="{{ profile.avatar.url }}" width="200">{% else %}<img class="rounded-circle " src="https://i.pinimg.com/736x/57/3f/22/573f22a1aa17b366f5489745dc4704e1.jpg" width="200">{% endif %}<h4 class="font-weight-bold text">{{ profile.user.username }}</h4></div>
-        </div>
-        <div class="col-md-8">
-            <div class="p-3 py-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex flex-row align-items-center back"><i class="fa fa-long-arrow-left mr-1 mb-1"></i>
-                        <a href="{% url 'anime:profile_detail' pk=profile.pk %}"><h6 class="text">Вернуться</h6></a>
-                    </div>
+
+    <div class="container rounded mycolor mt-5">
+        <div class="row prf">
+            <div class="col-md-4 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    <img class="rounded-circle " src="{{ profile.avatar.url }}" width="200">
+                    <h4 class="font-weight-bold text">{{ profile.user.username }}</h4>
                 </div>
+            </div>
+            <div class="col-md-8">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex flex-row align-items-center back"><i class="fa fa-long-arrow-left mr-1 mb-1"></i>
+                            <a href="{% url 'anime:profile_detail' pk=profile.pk %}"><h6 class="text">Вернуться</h6></a>
+                        </div>
+                    </div>
                     <form action="" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="row">
+                        <div class="row frm">
                             <div class="">{{ form.description }}</div>
-                             <div class="col-sm">
+                            <div class="col-sm">
                                 {{ form.sex.label_tag }}
-                                 <br>
+                                <br>
                                 {{ form.sex }}
                             </div>
                             <div class="col-sm">
@@ -34,52 +37,8 @@
                         </div>
                         <div class="mt-5 text-right"><button class="btn btn-primary profile-button" type="submit">Сохранить</button></div>
                     </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-{% else %}
-<div class="container rounded mycolor mt-5" style="margin-bottom: 50px;">
-    <h1 class="text-center pnf">404</h1>
-    <h2 class="text-center color">Страница не найдена</h2>
-    <h4 class="text-center color mt-2" >Скорее всего, вы попали сюда из-за опечатки в адресе страницы. Попробуйте <a href="{% url 'anime:anime_list' %}">вернуться на главную</a> или свяжитесь с администрацией сайта.</h4>
-    <img src="/media/pngegg.png" class="img">
-</div>
-{% endif %}
-
-<style>
-    #description {
-        width: 700px;
-    }
-    .mycolor {
-        background: #070720;
-    }
-    .text {
-       color: #fff;
-    }
-    label {
-       color: #fff;
-    }
-
-    .pnf {
-        color: #e53637;
-    }
-
-    .color {
-        color: #fff;
-    }
-
-    .img {
-        margin-left: 150px;
-    }
-
-    text-center a {
-        color: red;
-    }
-
-    text-center a:hover {
-        color: red;
-        text-decoration: underline;
-    }
-</style>
 {% endblock content %}

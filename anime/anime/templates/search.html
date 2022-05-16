@@ -2,83 +2,83 @@
 
 {% block content %}
 
-<section class="product spad">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <!--Trending-->
-                <div class="trending__product">
-                    <div class="row">
-                        <div class="col-lg-8 col-md-8 col-sm-8">
-                            <div class="section-title">
-                                <h4>Поиск: "{{ search_request }}" Найдено: {{ q.count }}</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {% for anime in q %}
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <div class="product__item">
-                                <div class="product__item__pic set-bg" style="background-image: url({{ anime.poster.url }});">
-                                    <div class="ep">{{ anime.total_series }} / {{ anime.total_series }}</div>
-                                    <div class="comment"><i class="bi bi-chat"></i> {{ anime.total_comments }}</div>
-                                    <div class="view"><i class="bi bi-eye"></i> {{ anime.total_views }}</div>
-                                </div>
-                                <div class="product__item__text">
-                                    <ul>
-                                        <li>{{ anime.get_type_display }}</li>
-                                        <li>{{ anime.year.year }}</li>
-                                    </ul>
-                                    <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
+    <section class="product spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!--Trending-->
+                    <div class="trending__product">
+                        <div class="row">
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                <div class="section-title">
+                                    <h4>Поиск: "{{ search_request }}" Найдено: {{ q.count }}</h4>
                                 </div>
                             </div>
                         </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 col-sm-8">
-                <div class="product__sidebar">
-                    <div class="product__sidebar__view">
-                        <div class="section-title">
-                            <h5>ТОП ПРОСМОТРОВ</h5>
-                        </div>
-                        <div class="filter__gallery">
-                            {% for anim in top_views %}
-                            <div class="product__sidebar__view__item set-bg mix day years" style="background-image: url({{ anim.poster.url }});">
-                                <div class="ep">{{ anim.total_series }} / {{ anim.total_series }}</div>
-                                <div class="view"><i class="bi bi-eye"></i> {{ anim.total_views }}</div>
-                                <h5><a href="{{ anim.get_absolute_url }}">{{ anim.title }}</a></h5>
-                            </div>
+                        <div class="row">
+                            {% for anime in q %}
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <div class="product__item">
+                                        <div class="product__item__pic set-bg" style="background-image: url({{ anime.poster.url }});">
+                                            <div class="ep">{{ anime.total_series }} / {{ anime.total_series }}</div>
+                                            <div class="comment"><i class="bi bi-chat"></i> {{ anime.comments.count }}</div>
+                                            <div class="view"><i class="bi bi-eye"></i> {{ anime.views.count }}</div>
+                                        </div>
+                                        <div class="product__item__text">
+                                            <ul>
+                                                <li>{{ anime.get_type_display }}</li>
+                                                <li>{{ anime.year.year }}</li>
+                                            </ul>
+                                            <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
+                </div>
 
-                    <div class="product__sidebar__comment">
-                        <div class="section-title">
-                            <h5>Новый комментарий</h5>
-                        </div>
-                        {% for comment in last_comment %}
-                        <div class="product__sidebar__comment__item">
-                            <div class="product__sidebar__comment__item__pic">
-                                <img src="{{ comment.poster.url }}" style="width: 90px;" alt="">
+                <div class="col-lg-4 col-md-6 col-sm-8">
+                    <div class="product__sidebar">
+                        <div class="product__sidebar__view">
+                            <div class="section-title">
+                                <h5>ТОП ПРОСМОТРОВ</h5>
                             </div>
-                            <div class="product__sidebar__comment__item__text">
-                                <ul>
-                                    <li>{{ comment.get_type_display }}</li>
-                                    <li>{{ comment.year.year }}</li>
-                                </ul>
-                                <h5><a href="{{ comment.get_absolute_url }}" >{{ comment.title }}</a></h5>
-                                <span><i class="bi bi-eye"></i> {{ comment.total_views }} Просмотров</span>
+                            <div class="filter__gallery">
+                                {% for anim in top_views %}
+                                    <div class="product__sidebar__view__item set-bg mix day years" style="background-image: url({{ anim.poster.url }});">
+                                        <div class="ep">{{ anim.total_series }} / {{ anim.total_series }}</div>
+                                        <div class="view"><i class="bi bi-eye"></i> {{ anim.views.count }}</div>
+                                        <h5><a href="{{ anim.get_absolute_url }}">{{ anim.title }}</a></h5>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
-                        {% endfor %}
+
+                        <div class="product__sidebar__comment">
+                            <div class="section-title">
+                                <h5>Новый комментарий</h5>
+                            </div>
+                            {% for comment in last_comment %}
+                                <div class="product__sidebar__comment__item">
+                                    <div class="product__sidebar__comment__item__pic">
+                                        <img class="anime-poster" src="{{ comment.poster.url }}" alt="">
+                                    </div>
+                                    <div class="product__sidebar__comment__item__text">
+                                        <ul>
+                                            <li>{{ comment.get_type_display }}</li>
+                                            <li>{{ comment.year.year }}</li>
+                                        </ul>
+                                        <h5><a href="{{ comment.get_absolute_url }}" >{{ comment.title }}</a></h5>
+                                        <span><i class="bi bi-eye"></i> {{ comment.views.count }} Просмотров</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 {% endblock content %}

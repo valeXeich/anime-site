@@ -1,0 +1,64 @@
+<div class="btn-group" role="group" aria-label="Basic example">
+    {% if anime_detail.watching.all %}
+        <form action="{% url 'anime:add_to_anime_list' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-sm watching-btn">Смотрю</button>
+            <input type="hidden" name="model_name" value="WatchingNow">
+            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+        </form>
+    {% else %}
+        <form action="{% url 'anime:add_to_anime_list' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-dark btn-sm watching-btn">Смотрю</button>
+            <input type="hidden" name="model_name" value="WatchingNow">
+            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+        </form>
+    {% endif %}
+    {% if anime_detail.will_watch.all %}
+        <form action="{% url 'anime:add_to_anime_list' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-sm will_watching-btn">Буду смотреть</button>
+            <input type="hidden" name="model_name" value="WillWatch">
+            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+        </form>
+    {% else %}
+        <form action="{% url 'anime:add_to_anime_list' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-dark btn-sm will_watching-btn">Буду смотреть</button>
+            <input type="hidden" name="model_name" value="WillWatch">
+            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+        </form>
+    {% endif %}
+    {% if anime_detail.throw.all %}
+        <form action="{% url 'anime:add_to_anime_list' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-sm watching-btn">Брошено</button>
+            <input type="hidden" name="model_name" value="Throw">
+            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+        </form>
+    {% else %}
+        <form action="{% url 'anime:add_to_anime_list' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-dark btn-sm watching-btn">Брошено</button>
+            <input type="hidden" name="model_name" value="Throw">
+            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+        </form>
+    {% endif %}
+</div>
+<div class="d-grid gap-2">
+    {% if anime_detail.viewed.all %}
+        <form action="{% url 'anime:add_to_anime_list' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-sm viewed-btn">Просмотрено</button>
+            <input type="hidden" name="model_name" value="Viewed">
+            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+        </form>
+    {% else %}
+        <form action="{% url 'anime:add_to_anime_list' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-dark btn-sm viewed-btn">Просмотрено</button>
+            <input type="hidden" name="model_name" value="Viewed">
+            <input type="hidden" name="anime_id" value="{{ anime_detail.id }}">
+        </form>
+    {% endif %}
+</div>

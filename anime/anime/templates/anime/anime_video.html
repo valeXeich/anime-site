@@ -1,36 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="anime-details spad">
-    <div class="container">
-<div class="anime__video__player">
-    <h2 class="text-center m-2 color">{{ video.name }}</h2>
-    <video
-            id="my-video"
-            class="video-js video"
-            controls
-            preload="auto"
-            width="930"
-            height="533"
-            poster="{{ video.thumb.url }}"
-            data-setup="{
+    <section class="anime-details spad">
+        <div class="container">
+            <div class="anime__video__player">
+                <h2 class="text-center m-2 text-white">{{ video.name }}</h2>
+                <video
+                        id="my-video"
+                        class="video-js video"
+                        controls
+                        preload="auto"
+                        width="930"
+                        height="533"
+                        poster="{{ video.thumb.url }}"
+                        data-setup="{
               'controls': true,
               'autoplay': false,
               'preload': auto,
             }">
-        <source src="{{ video.video.url }}" type="video/mp4">
-    </video>
-</div>
+                    <source src="{{ video.video.url }}" type="video/mp4">
+                </video>
+            </div>
         </div>
-</section>
-<style>
-    .color {
-        color: white;
-    }
-
-    .video {
-        margin-left: auto;
-        margin-right: auto;
-    }
-</style>
+    </section>
 {% endblock content %}

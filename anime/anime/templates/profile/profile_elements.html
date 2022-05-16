@@ -1,0 +1,22 @@
+<div class="profile-nav col-md-3">
+    <div class="panel">
+        <div class="user-heading round">
+            <a href="#">
+                <img src="{{ profile.avatar.url }}" alt="">
+            </a>
+            <h1 class="text-white">{{ profile.user }}</h1>
+        </div>
+        {% if request.user.pk == profile.user.pk %}
+            <a href="{% url 'anime:profile_update' pk=profile.pk %}"><button class="btn btn-danger mt-1 edit-btn"><i class="fa fa-edit"></i> Редактировать</button></a>
+        {% endif %}
+    </div>
+</div>
+<div class="profile-info col-md-9">
+    <div class="panel">
+        <div class="bio-graph-heading">
+            {% if profile.description %}
+                {{ profile.description }}
+            {% else %}
+                Пусто
+            {% endif %}
+        </div>

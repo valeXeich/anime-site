@@ -1,7 +1,6 @@
 from django.views.generic import ListView
 from .models import Anime, Genre, Directors, Studio
-from .mixins import ProfileMixin
-from .utils import get_random, get_comments
+from .mixins import CustomContextMixin
 
 
 class FilterList:
@@ -31,12 +30,13 @@ class FilterList:
         return Anime.objects.all().order_by('type').distinct('type')
 
 
-class FilterForAnime(ProfileMixin, FilterList, ListView):
+class FilterForAnime(CustomContextMixin, FilterList, ListView):
     model = Anime
     template_name = 'filter.html'
+    context_object_name = 'anime_filter'
 
     def get_queryset(self):
-        queryset = Anime.objects.all().prefetch_related('anime_comments', 'views')
+        queryset = Anime.objects.all().prefetch_related('comments', 'views')
         if 'genre' in self.request.GET:
             queryset = queryset.filter(genre__in=self.request.GET.getlist('genre'))
 
@@ -62,21 +62,14 @@ class FilterForAnime(ProfileMixin, FilterList, ListView):
             queryset = queryset.filter(type__in=self.request.GET.getlist('type'))
         return queryset
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['anime_filter'] = self.get_queryset()
-        context['profile'] = self.profile
-        context['random_anime'] = get_random()
-        context['last_comment'] = get_comments()[:4]
-        return context
 
-
-class FilterForGenre(ProfileMixin, FilterList, ListView):
+class FilterForGenre(CustomContextMixin, FilterList, ListView):
     model = Anime
     template_name = 'genre_filter.html'
+    context_object_name = 'anime_filter'
 
     def get_queryset(self):
-        queryset = Anime.objects.prefetch_related('anime_comments', 'views').filter(genre__id=self.request.GET.get('get_genre'))
+        queryset = Anime.objects.prefetch_related('comments', 'views').filter(genre__id=self.request.GET.get('get_genre'))
 
         if 'directors' in self.request.GET:
             queryset = queryset.filter(directors__in=self.request.GET.getlist('directors'))
@@ -103,11 +96,8 @@ class FilterForGenre(ProfileMixin, FilterList, ListView):
     def get_context_data(self, *args, **kwargs):
         genre = Genre.objects.get(id=self.request.GET.get('get_genre'))
         context = super().get_context_data(*args, **kwargs)
-        context['anime_filter'] = self.get_queryset()
-        context['profile'] = self.profile
         context['genre'] = genre
-        context['random_anime'] = get_random()
-        context['last_comment'] = get_comments()[:4]
         return context
+
 
 

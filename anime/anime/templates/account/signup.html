@@ -5,8 +5,8 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
-<!-- Normal Breadcrumb Begin -->
-    <section class="normal-breadcrumb set-bg" style="background-image: url(/static/img/normal-breadcrumb.jpg);">
+    <!-- Normal Breadcrumb Begin -->
+    <section class="normal-breadcrumb set-bg">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -19,7 +19,7 @@
         </div>
     </section>
     <!-- Normal Breadcrumb End -->
-<!-- Signup Section Begin -->
+    <!-- Signup Section Begin -->
     <section class="signup spad">
         <div class="container">
             <div class="row">
@@ -27,21 +27,21 @@
                     <div class="login__form">
                         <h3>Регистрация</h3>
                         <form id="signup_form" method="post" action="{% url 'account_signup' %}">
-                          {% csrf_token %}
+                            {% csrf_token %}
                             <div class="input__item">
-                              {{ form.username }}
+                                {{ form.username }}
                                 <span class="bi bi-person-fill"></span>
                             </div>
                             <div class="input__item">
-                              {{ form.email }}
+                                {{ form.email }}
                                 <span class="bi bi-envelope"></span>
                             </div>
                             <div class="input__item">
-                              {{ form.password1 }}
+                                {{ form.password1 }}
                                 <span class="bi bi-shield-lock"></span>
                             </div>
                             <div class="input__item">
-                              {{ form.password2 }}
+                                {{ form.password2 }}
                                 <span class="bi bi-shield-lock"></span>
                             </div>
                             <button type="submit" class="site-btn">Зарегистрироваться</button>

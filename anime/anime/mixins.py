@@ -1,40 +1,29 @@
-from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
-from django.views import View
+from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin
 
-from .models import Profile, AnimeList, Comment, Anime
+from .models import Comment
 from .forms import CommentForm
-
-User = get_user_model()
-
-class ProfileMixin(View):
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            user = User.objects.get(id=request.user.id)
-            profile = Profile.objects.filter(user=user).first()
-            if not profile:
-                profile = Profile.objects.create(user=user)
-        else:
-            profile = Profile.objects.filter(for_anonymous_user=True).first()
-        self.profile = profile
-        return super().dispatch(request, *args, **kwargs)
+from .utils import top_views, get_comments, get_random
 
 
-class AnimeListMixin(View):
+class ProfileContextMixin(ContextMixin):
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            user = User.objects.get(id=request.user.id)
-            profile = Profile.objects.get(user=user)
-            anime_list = AnimeList.objects.filter(owner=profile).first()
-            if not anime_list:
-                anime_list = AnimeList.objects.create(owner=profile)
-        else:
-            anime_list = AnimeList.objects.filter(for_anonymous_user=True).first()
-        self.anime_list = anime_list
-        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['random_anime'] = get_random()
+        return context
+
+
+class CustomContextMixin(ProfileContextMixin, ContextMixin):
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['profile'] = self.request.user.profile
+        context['top_views'] = top_views()[:5]
+        context['last_comment'] = get_comments()[:4]
+        return context
 
 
 class CommentMixin(FormMixin):
@@ -45,7 +34,6 @@ class CommentMixin(FormMixin):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -56,9 +44,8 @@ class CommentMixin(FormMixin):
         self.object.author = self.request.user
         self.object.anime = self.get_object()
         self.object.save()
-        anime = Anime.objects.get(pk=self.get_object().pk)
-        anime.anime_comments.add(self.object)
         return super().form_valid(form)
 
     def get_comments_for_anime(self):
         return Comment.objects.filter(anime=self.get_object()).select_related('author')
+

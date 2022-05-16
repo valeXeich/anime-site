@@ -1,15 +1,14 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
+from django.contrib.auth.views import LogoutView
+
 from .filter import FilterForAnime, FilterForGenre
 from .views import (
     AnimeListView,
     AnimeDetailView,
     ProfileView,
-    AddToWatchingNow,
-    AddToWillWatch,
-    AddToThrow,
-    AddToViewed,
+    AddToList,
     AddToFavorite,
     ProfileWillWatchView,
     ProfileViewedView,
@@ -29,7 +28,6 @@ from .views import (
     DirectorsDetailView,
     StudioDetailView,
 )
-from django.contrib.auth.views import LogoutView
 
 app_name = 'anime'
 
@@ -53,17 +51,14 @@ urlpatterns = [
     path('profile/<int:pk>/throw', ProfileThrowView.as_view(), name='throw'),
     path('profile/<int:pk>/favorite', ProfileFavoriteView.as_view(), name='favorite'),
     # Add AnimeList
-    path('add-to-watching/<slug:slug>', AddToWatchingNow.as_view(), name='add_to_watching'),
-    path('add-to-will-watching/<slug:slug>', AddToWillWatch.as_view(), name='add_to_will_watching'),
-    path('add-to-viewed/<slug:slug>', AddToViewed.as_view(), name='add_to_viewed'),
-    path('add-to-throw/<slug:slug>', AddToThrow.as_view(), name='add_to_throw'),
-    path('add-to-favorite/<slug:slug>', AddToFavorite.as_view(), name='add_to_favorite'),
+    path('add-to-will-watching/', AddToList.as_view(), name='add_to_anime_list'),
+    path('add-to-favorite/', AddToFavorite.as_view(), name='add_to_favorite'),
 
     path('anime/genres/', GenreListView.as_view(), name='genre_list'),
     path('anime/genres/<slug:slug>', GenreDetailView.as_view(), name='genre_detail'),
     path('anime/directors/<slug:slug>', DirectorsDetailView.as_view(), name='directors_detail'),
     path('anime/studio/<slug:slug>', StudioDetailView.as_view(), name='studio_detail'),
-    path('comment/delete/<slug:slug>/<int:pk>', DeleteCommentView.as_view(), name='delete_comment'),
+    path('comment/delete/', DeleteCommentView.as_view(), name='delete_comment'),
 
     path('search/', Search.as_view(), name='search'),
 ]

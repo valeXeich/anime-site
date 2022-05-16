@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Product Section Begin -->
+    <!-- Product Section Begin -->
     <section class="product-page spad">
         <div class="container">
             <div class="row">
@@ -18,28 +18,28 @@
                         </div>
                         <div class="row">
                             {% for anime in object_list %}
-                            <div class="col-lg-4 col-md-6 col-sm-6">
-                                <div class="product__item">
-                                    <div class="product__item__pic set-bg" style="background-image: url({{ anime.poster.url }});">
-                                        <div class="ep">{{ anime.total_series }} / {{ anime.total_series }}</div>
-                                        <div class="comment"><i class="bi bi-chat"></i> {{ anime.total_comments }}</div>
-                                        <div class="view"><i class="bi bi-eye"></i> {{ anime.total_views }}</div>
-                                    </div>
-                                    <div class="product__item__text">
-                                        <ul>
-                                            <li>{{ anime.get_type_display }}</li>
-                                            <li>{{ anime.year.year }}</li>
-                                        </ul>
-                                        <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <div class="product__item">
+                                        <div class="product__item__pic set-bg" style="background-image: url({{ anime.poster.url }});">
+                                            <div class="ep">{{ anime.total_series }} / {{ anime.total_series }}</div>
+                                            <div class="comment"><i class="bi bi-chat"></i> {{ anime.comments.count }}</div>
+                                            <div class="view"><i class="bi bi-eye"></i> {{ anime.views.count }}</div>
+                                        </div>
+                                        <div class="product__item__text">
+                                            <ul>
+                                                <li>{{ anime.get_type_display }}</li>
+                                                <li>{{ anime.year.year }}</li>
+                                            </ul>
+                                            <h5><a href="{{ anime.get_absolute_url }}">{{ anime.title }}</a></h5>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             {% endfor %}
                         </div>
                     </div>
 
                     {% if is_paginated %}
-                    {% include 'paginator.html' with page=page_obj %}
+                        {% include 'paginator.html' with page=page_obj %}
                     {% endif %}
 
                 </div>
@@ -51,12 +51,12 @@
                             </div>
                             <div class="filter__gallery">
                                 {% for anim in top_views %}
-                            <div class="product__sidebar__view__item set-bg mix day years" style="background-image: url({{ anim.poster.url }});">
-                                <div class="ep">{{ anim.total_series }} / {{ anim.total_series }}</div>
-                                <div class="view"><i class="bi bi-eye"></i> {{ anim.total_views }}</div>
-                                <h5><a href="{{ anim.get_absolute_url }}">{{ anim.title }}</a></h5>
-                            </div>
-                            {% endfor %}
+                                    <div class="product__sidebar__view__item set-bg mix day years" style="background-image: url({{ anim.poster.url }});">
+                                        <div class="ep">{{ anim.total_series }} / {{ anim.total_series }}</div>
+                                        <div class="view"><i class="bi bi-eye"></i> {{ anim.views.count }}</div>
+                                        <h5><a href="{{ anim.get_absolute_url }}">{{ anim.title }}</a></h5>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
                         <div class="product__sidebar__comment">
@@ -64,25 +64,25 @@
                                 <h5>Новый комментарий</h5>
                             </div>
                             {% for comment in last_comment %}
-                        <div class="product__sidebar__comment__item">
-                            <div class="product__sidebar__comment__item__pic">
-                                <img src="{{ comment.poster.url }}" style="width: 90px;" alt="">
-                            </div>
-                            <div class="product__sidebar__comment__item__text">
-                                <ul>
-                                    <li>{{ comment.get_type_display }}</li>
-                                    <li>{{ comment.year.year }}</li>
-                                </ul>
-                                <h5><a href="{{ comment.get_absolute_url }}" >{{ comment.title }}</a></h5>
-                                <span><i class="bi bi-eye"></i> {{ comment.total_views }} Просмотров</span>
-                            </div>
-                        </div>
-                        {% endfor %}
+                                <div class="product__sidebar__comment__item">
+                                    <div class="product__sidebar__comment__item__pic">
+                                        <img class="anime-poster" src="{{ comment.poster.url }}" alt="">
+                                    </div>
+                                    <div class="product__sidebar__comment__item__text">
+                                        <ul>
+                                            <li>{{ comment.get_type_display }}</li>
+                                            <li>{{ comment.year.year }}</li>
+                                        </ul>
+                                        <h5><a href="{{ comment.get_absolute_url }}" >{{ comment.title }}</a></h5>
+                                        <span><i class="bi bi-eye"></i> {{ comment.views.count }} Просмотров</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-<!-- Product Section End -->
+    <!-- Product Section End -->
 {% endblock %}
