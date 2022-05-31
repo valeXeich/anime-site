@@ -9,7 +9,7 @@ Stack
 1. Install requirements
 
    ```bash
-     $ pip install -r requirements.txt
+     $ pip install -r req.txt
    ```
 2. Migrations
   
